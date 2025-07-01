@@ -1,16 +1,17 @@
-package data;
+package com.example.hotelmanagement.data.booking;
 
-import lombok.*;
 import java.math.BigDecimal;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-public class Booking {
 
-  private UUID id;
+public class BookingDto {
+
+  private String id;
   private String name;
   private String description;
   private BigDecimal price;
-  private Boolean isAvailable = true;
 }

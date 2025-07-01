@@ -1,4 +1,4 @@
-package data;
+package com.example.hotelmanagement.data.guest;
 
 import lombok.*;
 import java.util.UUID;
