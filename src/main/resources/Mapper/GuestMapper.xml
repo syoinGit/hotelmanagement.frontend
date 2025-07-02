@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.hotelmanagement.repository.HotelRepository">
+
+  <select id="findAllGuest" resultType="com.example.hotelmanagement.data.guest.GuestDto">
+    SELECT * FROM guest
+  </select>
+
+  <select id="findAllBooking" resultType="com.example.hotelmanagement.data.booking.BookingDto">
+    SELECT * FROM booking
+  </select>
+
+  <select id="findAllReservation"
+    resultType="com.example.hotelmanagement.data.reservation.ReservationDto">
+    SELECT * FROM reservation
+  </select>
+
+  <select id="searchGuest" resultType="com.example.hotelmanagement.data.guest.GuestDto">
+    SELECT * FROM guest
+    <where>
+      <if test="guest.id != null and guest.id != ''">
+        AND id = #{guest.id}
+      </if>
+      <if test="guest.name != null and guest.name != ''">
+        AND name LIKE CONCAT('%', #{guest.name}, '%')
+      </if>
+      <if test="guest.kanaName != null and guest.kanaName != ''">
+        AND kana_name LIKE CONCAT('%', #{guest.kanaName}, '%')
+      </if>
+      <if test="guest.phone != null and guest.phone != ''">
+        AND phone LIKE CONCAT('%', #{guest.phone}, '%')
+      </if>
+    </where>
+  </select>
+
+</mapper>

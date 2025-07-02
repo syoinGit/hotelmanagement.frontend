@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.data.guest;
 
+import java.util.List;
 import lombok.*;
 import java.util.UUID;
 
@@ -7,7 +8,7 @@ import java.util.UUID;
 @Setter
 public class Guest {
 
-  private UUID id;
+  private String id;
   private String name;
   private String kanaName;
   private String gender;
@@ -17,4 +18,4 @@ public class Guest {
   private String phone;
   private Boolean deleted = false;
 
-}
+  }
