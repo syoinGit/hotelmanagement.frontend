@@ -4,6 +4,7 @@ import com.example.hotelmanagement.data.booking.BookingDto;
 import com.example.hotelmanagement.data.guest.Guest;
 import com.example.hotelmanagement.data.guest.GuestDto;
 import com.example.hotelmanagement.data.reservation.ReservationDto;
+import java.math.BigDecimal;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,5 +19,13 @@ public interface HotelRepository {
   List<ReservationDto> findAllReservation();
 
   List<GuestDto> searchGuest(@Param("guest") Guest guest);
+
+  BigDecimal findTotalPriceById(@Param("id") String id);
+
+
+
+  void insertGuest(GuestDto guest);
+
+  void insertReservation(@Param("list") List<ReservationDto> reservationList);
 
 }
