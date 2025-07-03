@@ -20,19 +20,22 @@ public class HotelController {
     this.service = service;
   }
 
+  // ゲスト情報の全権取得
   @GetMapping("/guestList")
   public List<GuestDetailDto> getGuestList() {
     return service.getAllGuest();
   }
 
+  // ゲストの単一検索
   @GetMapping("/searchGuest")
   public List<GuestDetailDto> searchGuest(@ModelAttribute Guest guest) {
     return service.searchGuest(guest);
   }
 
+  // ゲスト情報の登録
   @PutMapping("/insertGuest")
   public ResponseEntity<String> registerStudent(@RequestBody GuestDetailDto guestDetailDto) {
     service.insertGuest(guestDetailDto);
-    return ResponseEntity.ok("更新処理が完了しました。");
+    return ResponseEntity.ok("登録処理が完了しました。");
   }
 }

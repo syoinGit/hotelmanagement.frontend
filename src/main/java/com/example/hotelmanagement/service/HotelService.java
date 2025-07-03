@@ -24,6 +24,8 @@ public class HotelService {
 
   }
 
+
+  // ゲスト情報の全権取得
   public List<GuestDetailDto> getAllGuest() {
     return converter.convertGuestDetailDto(
         repository.findAllGuest(),
@@ -31,6 +33,7 @@ public class HotelService {
         repository.findAllReservation());
   }
 
+  // ゲスト情報の単一検索
   public List<GuestDetailDto> searchGuest(Guest guest) {
     return converter.convertGuestDetailDto(
         repository.searchGuest(guest),
@@ -38,12 +41,15 @@ public class HotelService {
         repository.findAllReservation());
   }
 
+  // ゲストの登録
   public void insertGuest(GuestDetailDto guestDetailDto) {
     guestDetailDto.getGuest().setId(UUID.randomUUID().toString());
     repository.insertGuest(guestDetailDto.getGuest());
     initReservation(guestDetailDto);
   }
 
+
+  // 宿泊情報の登録
   private void initReservation(GuestDetailDto guestDetailDto) {
     String guestId = guestDetailDto.getGuest().getId();
     List<ReservationDto> reservationDto = guestDetailDto.getBookings().stream()
@@ -61,9 +67,6 @@ public class HotelService {
           return r;
         })
         .toList();
-
-    System.out.println(reservationDto);
-
     repository.insertReservation(reservationDto);
   }
 }
