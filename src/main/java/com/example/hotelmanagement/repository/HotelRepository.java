@@ -19,10 +19,9 @@ public interface HotelRepository {
 
   List<ReservationDto> findAllReservation();
 
-  List<GuestDto> searchGuest(@Param("guest") Guest guest);
+  List<GuestDto> searchGuest(@Param("guest") Guest guest, @Param("status") String status);
 
   BigDecimal findTotalPriceById(@Param("id") String id);
-
 
   void insertGuest(GuestDto guest);
 
@@ -30,5 +29,10 @@ public interface HotelRepository {
 
   void insertBooking(@Param("booking") Booking booking);
 
+  void editGuest(GuestDto guestDto);
+
+  void editReservation(@Param("List") List<ReservationDto> reservationDtoList);
+
+  void checkIn(@Param("id") String id);
 
 }

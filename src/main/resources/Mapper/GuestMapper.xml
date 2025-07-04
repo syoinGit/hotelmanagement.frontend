@@ -22,7 +22,10 @@
     SELECT * FROM guest
     <where>
       <if test="guest.id != null and guest.id != ''">
-        AND id = #{guest.id}
+        AND id LIKE CONCAT('%', #{guest.id}, '%')
+      </if>
+      <if test="guest.phone != null and guest.phone != ''">
+        AND phone LIKE CONCAT('%', #{guest.phone}, '%')
       </if>
       <if test="guest.name != null and guest.name != ''">
         AND name LIKE CONCAT('%', #{guest.name}, '%')
@@ -30,8 +33,10 @@
       <if test="guest.kanaName != null and guest.kanaName != ''">
         AND kana_name LIKE CONCAT('%', #{guest.kanaName}, '%')
       </if>
-      <if test="guest.phone != null and guest.phone != ''">
-        AND phone LIKE CONCAT('%', #{guest.phone}, '%')
+      <if test="status != null and status != ''">
+        AND id IN (
+        SELECT guest_id FROM reservation WHERE status = #{status}
+        )
       </if>
     </where>
   </select>
@@ -65,7 +70,7 @@
   </insert>
 
   <insert id="insertBooking" parameterType="com.example.hotelmanagement.data.booking.Booking">
-    INSERT INTO booking (
+    INSERT INTO booking(
     id,
     name,
     description,
@@ -105,5 +110,37 @@
       )
     </foreach>
   </insert>
+
+  <update id="editGuest" parameterType="com.example.hotelmanagement.data.guest.GuestDto">
+    UPDATE guest
+    SET
+    name = #{name},
+    kana_name = #{kanaName},
+    gender = #{gender},
+    age = #{age},
+    region = #{region},
+    email = #{email},
+    phone = #{phone}
+    WHERE id = #{id}
+  </update>
+
+  <update id="editReservation">
+    <foreach collection="List" item="item" separator=";">
+      UPDATE reservation
+      SET
+      check_in_date = #{item.checkInDate},
+      stay_days = #{item.stayDays},
+      total_price = #{item.totalPrice},
+      status = #{item.status},
+      memo = #{item.memo}
+      WHERE id = #{item.id}
+    </foreach>
+  </update>
+
+  <update id="checkIn">
+    UPDATE reservation
+    SET status = 'CHECKED_IN'
+    WHERE id = #{id}
+  </update>
 
 </mapper>
