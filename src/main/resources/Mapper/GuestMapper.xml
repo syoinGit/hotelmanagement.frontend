@@ -64,6 +64,22 @@
     )
   </insert>
 
+  <insert id="insertBooking" parameterType="com.example.hotelmanagement.data.booking.Booking">
+    INSERT INTO booking (
+    id,
+    name,
+    description,
+    price,
+    is_available
+    ) VALUES (
+    #{booking.id},
+    #{booking.name},
+    #{booking.description},
+    #{booking.price},
+    #{booking.isAvailable}
+    )
+  </insert>
+
   <insert id="insertReservation">
     <foreach collection="list" item="item" separator=";">
       INSERT INTO reservation (

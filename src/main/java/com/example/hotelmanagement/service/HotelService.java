@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.service;
 
+import com.example.hotelmanagement.data.booking.Booking;
 import com.example.hotelmanagement.data.guest.Guest;
 import com.example.hotelmanagement.data.guest.GuestDetailDto;
 import com.example.hotelmanagement.data.reservation.ReservationDto;
@@ -68,5 +69,9 @@ public class HotelService {
         })
         .toList();
     repository.insertReservation(reservationDto);
+  }
+  public void insertBooking(Booking booking){
+    booking.setId(UUID.randomUUID().toString());
+    repository.insertBooking(booking);
   }
 }

@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.repository;
 
+import com.example.hotelmanagement.data.booking.Booking;
 import com.example.hotelmanagement.data.booking.BookingDto;
 import com.example.hotelmanagement.data.guest.Guest;
 import com.example.hotelmanagement.data.guest.GuestDto;
@@ -23,9 +24,11 @@ public interface HotelRepository {
   BigDecimal findTotalPriceById(@Param("id") String id);
 
 
-
   void insertGuest(GuestDto guest);
 
   void insertReservation(@Param("list") List<ReservationDto> reservationList);
+
+  void insertBooking(@Param("booking") Booking booking);
+
 
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 @Setter
 public class Booking {
 
-  private UUID id;
+  private String id;
   private String name;
   private String description;
   private BigDecimal price;

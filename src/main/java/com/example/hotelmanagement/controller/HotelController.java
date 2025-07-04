@@ -1,5 +1,6 @@
 package com.example.hotelmanagement.controller;
 
+import com.example.hotelmanagement.data.booking.Booking;
 import com.example.hotelmanagement.data.guest.Guest;
 import com.example.hotelmanagement.data.guest.GuestDetailDto;
 import java.util.List;
@@ -34,8 +35,13 @@ public class HotelController {
 
   // ゲスト情報の登録
   @PutMapping("/insertGuest")
-  public ResponseEntity<String> registerStudent(@RequestBody GuestDetailDto guestDetailDto) {
+  public ResponseEntity<String> insertStudent(@RequestBody GuestDetailDto guestDetailDto) {
     service.insertGuest(guestDetailDto);
-    return ResponseEntity.ok("登録処理が完了しました。");
+    return ResponseEntity.ok("宿泊者情報の登録が完了しました。");
+  }
+  @PutMapping("/insertBooking")
+  public ResponseEntity<String> insertStudent(@RequestBody Booking booking){
+    service.insertBooking(booking);
+    return ResponseEntity.ok("宿泊プランの登録が完了しました。");
   }
 }
