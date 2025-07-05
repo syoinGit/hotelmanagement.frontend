@@ -5,19 +5,23 @@
 
 <mapper namespace="com.example.hotelmanagement.repository.HotelRepository">
 
+  <!-- 宿泊者を全件検索 -->
   <select id="findAllGuest" resultType="com.example.hotelmanagement.data.guest.GuestDto">
     SELECT * FROM guest
   </select>
 
+  <!-- 宿泊プランを全件検索 -->
   <select id="findAllBooking" resultType="com.example.hotelmanagement.data.booking.BookingDto">
     SELECT * FROM booking
   </select>
 
+  <!-- 宿泊予約を全件検索 -->
   <select id="findAllReservation"
     resultType="com.example.hotelmanagement.data.reservation.ReservationDto">
     SELECT * FROM reservation
   </select>
 
+  <!-- 宿泊者を単一検索 -->
   <select id="searchGuest" resultType="com.example.hotelmanagement.data.guest.GuestDto">
     SELECT * FROM guest
     <where>
@@ -34,17 +38,30 @@
         AND kana_name LIKE CONCAT('%', #{guest.kanaName}, '%')
       </if>
       <if test="status != null and status != ''">
-        AND id IN (
+        AND idIN(
         SELECT guest_id FROM reservation WHERE status = #{status}
         )
       </if>
     </where>
   </select>
 
+  <!-- 名前・ふりがな・電話番号で完全一致検索 -->
+  <select id="matchGuest" parameterType="com.example.hotelmanagement.data.guest.Guest"
+    resultType="com.example.hotelmanagement.data.guest.GuestDto">
+    SELECT *
+    FROM guest
+    WHERE name = #{guest.name}
+    AND kana_name = #{guest.kanaName}
+    AND phone = #{guest.phone}
+    AND deleted = 0
+  </select>
+
+  <!-- 合計金額をIDから検索 -->
   <select id="findTotalPriceById" resultType="java.math.BigDecimal">
     SELECT price FROM booking WHERE id = #{id}
   </select>
 
+  <!-- 宿泊者を登録 -->
   <insert id="insertGuest" parameterType="com.example.hotelmanagement.data.guest.GuestDto">
     INSERT INTO guest (
     id,
@@ -69,6 +86,7 @@
     )
   </insert>
 
+  <!-- 宿泊コースを登録 -->
   <insert id="insertBooking" parameterType="com.example.hotelmanagement.data.booking.Booking">
     INSERT INTO booking(
     id,
@@ -85,6 +103,7 @@
     )
   </insert>
 
+  <!-- 宿泊予約を登録 -->
   <insert id="insertReservation">
     <foreach collection="list" item="item" separator=";">
       INSERT INTO reservation (
@@ -111,6 +130,7 @@
     </foreach>
   </insert>
 
+  <!-- 宿泊者を変更 -->
   <update id="editGuest" parameterType="com.example.hotelmanagement.data.guest.GuestDto">
     UPDATE guest
     SET
@@ -124,6 +144,7 @@
     WHERE id = #{id}
   </update>
 
+  <!-- 宿泊予約を変更 -->
   <update id="editReservation">
     <foreach collection="List" item="item" separator=";">
       UPDATE reservation
@@ -137,9 +158,17 @@
     </foreach>
   </update>
 
+  <!-- チェックイン処理の作成 -->
   <update id="checkIn">
     UPDATE reservation
     SET status = 'CHECKED_IN'
+    WHERE id = #{id}
+  </update>
+
+  <!-- チェックアウト処理の作成 -->
+  <update id="checkOut">
+    UPDATE reservation
+    SET status = 'CHECKED_OUT'
     WHERE id = #{id}
   </update>
 

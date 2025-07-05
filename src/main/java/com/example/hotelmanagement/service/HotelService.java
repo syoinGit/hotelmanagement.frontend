@@ -3,6 +3,7 @@ package com.example.hotelmanagement.service;
 import com.example.hotelmanagement.data.booking.Booking;
 import com.example.hotelmanagement.data.guest.Guest;
 import com.example.hotelmanagement.data.guest.GuestDetailDto;
+import com.example.hotelmanagement.data.guest.GuestDto;
 import com.example.hotelmanagement.data.reservation.ReservationDto;
 import com.example.hotelmanagement.data.reservation.ReservationStatus;
 import java.time.LocalDate;
@@ -42,6 +43,11 @@ public class HotelService {
         repository.findAllReservation());
   }
 
+  // 宿泊者の完全一致検索
+  public List<GuestDto> matchGuest(GuestDto guest) {
+    return repository.matchGuest(guest);
+  }
+
   // ゲストの登録
   public void insertGuest(GuestDetailDto guestDetailDto) {
     guestDetailDto.getGuest().setId(UUID.randomUUID().toString());
@@ -49,8 +55,7 @@ public class HotelService {
     initReservation(guestDetailDto);
   }
 
-
-  // 宿泊情報の登録
+  // 宿泊予約の登録
   private void initReservation(GuestDetailDto guestDetailDto) {
     String guestId = guestDetailDto.getGuest().getId();
     List<ReservationDto> reservationDto = guestDetailDto.getBookings().stream()
@@ -71,17 +76,36 @@ public class HotelService {
     repository.insertReservation(reservationDto);
   }
 
+  // 宿泊プランの登録
   public void insertBooking(Booking booking) {
     booking.setId(UUID.randomUUID().toString());
     repository.insertBooking(booking);
   }
 
+  // 宿泊者の編集
   public void editGuest(GuestDetailDto guestDetailDto) {
     repository.editGuest(guestDetailDto.getGuest());
     repository.editReservation(guestDetailDto.getReservations());
   }
 
+  // チェックイン処理の作成
   public void checkIn(String reservationId) {
-    repository.checkIn(reservationId);
+    ReservationStatus status = repository.findStatusById(reservationId);
+    if (status == ReservationStatus.NOT_CHECKED_IN) {
+      repository.checkIn(reservationId);
+    } else {
+      throw new IllegalStateException("未チェックインの予約のみチェックイン可能です");
+    }
+  }
+
+  // チェックアウト処理の作成
+  public void checkOut(String reservationId) {
+    repository.checkOut(reservationId);
+    ReservationStatus status = repository.findStatusById(reservationId);
+    if (status == ReservationStatus.CHECKED_IN) {
+      repository.checkOut(reservationId);
+    } else {
+      throw new IllegalStateException("チェックイン済みの予約のみチェックアウト可能です");
+    }
   }
 }
