@@ -1,15 +1,15 @@
-package com.example.hotelmanagement.data.reservation;
-
-import lombok.*;
+package com.portfolio.hotel.management.data.reservation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-public class Reservation {
+
+public class ReservationDto {
 
   private String id;
   private String guestId;

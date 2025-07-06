@@ -1,4 +1,4 @@
-package com.example.hotelmanagement.data.reservation;
+package com.portfolio.hotel.management.data.reservation;
 
 public enum ReservationStatus {
   TEMPORARY,

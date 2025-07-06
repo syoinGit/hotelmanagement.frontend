@@ -1,12 +1,13 @@
-package com.example.hotelmanagement.data.guest;
+package com.portfolio.hotel.management.data.guest;
 
-import java.util.List;
-import lombok.*;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-public class Guest {
+
+public class GuestDto {
 
   private String id;
   private String name;
@@ -16,6 +17,5 @@ public class Guest {
   private String region;
   private String email;
   private String phone;
-  private Boolean deleted = false;
 
-  }
+}

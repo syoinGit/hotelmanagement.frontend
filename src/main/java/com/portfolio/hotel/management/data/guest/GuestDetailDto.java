@@ -1,7 +1,7 @@
-package com.example.hotelmanagement.data.guest;
+package com.portfolio.hotel.management.data.guest;
 
-import com.example.hotelmanagement.data.booking.BookingDto;
-import com.example.hotelmanagement.data.reservation.ReservationDto;
+import com.portfolio.hotel.management.data.booking.BookingDto;
+import com.portfolio.hotel.management.data.reservation.ReservationDto;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,11 +1,11 @@
-package com.example.hotelmanagement.repository;
+package com.portfolio.hotel.management.repository;
 
-import com.example.hotelmanagement.data.booking.Booking;
-import com.example.hotelmanagement.data.booking.BookingDto;
-import com.example.hotelmanagement.data.guest.Guest;
-import com.example.hotelmanagement.data.guest.GuestDto;
-import com.example.hotelmanagement.data.reservation.ReservationDto;
-import com.example.hotelmanagement.data.reservation.ReservationStatus;
+import com.portfolio.hotel.management.data.booking.Booking;
+import com.portfolio.hotel.management.data.booking.BookingDto;
+import com.portfolio.hotel.management.data.guest.Guest;
+import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.ReservationDto;
+import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,7 +25,7 @@ public interface HotelRepository {
   List<ReservationDto> findAllReservation();
 
   // 宿泊者IDから宿泊者を検索
-  List<GuestDto> searchGuest(@Param("guest") Guest guest, @Param("status") String status);
+  List<GuestDto> searchGuest(@Param("guest") Guest guest);
 
   // 宿泊者IDから宿泊者を完全一致検索
   List<GuestDto> matchGuest(@Param("guest")GuestDto guest);

@@ -1,21 +1,23 @@
-package com.example.hotelmanagement.controller;
+package com.portfolio.hotel.management.controller;
 
-import com.example.hotelmanagement.data.booking.Booking;
-import com.example.hotelmanagement.data.guest.Guest;
-import com.example.hotelmanagement.data.guest.GuestDetailDto;
-import com.example.hotelmanagement.data.guest.GuestDto;
-import com.example.hotelmanagement.data.reservation.ReservationStatus;
+import com.portfolio.hotel.management.data.booking.Booking;
+import com.portfolio.hotel.management.data.guest.Guest;
+import com.portfolio.hotel.management.data.guest.GuestDetailDto;
+import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.hotelmanagement.service.HotelService;
+import com.portfolio.hotel.management.HotelService;
 
+@CrossOrigin(origins = "http://localhost:3001")
 @RestController
 public class HotelController {
 
@@ -26,6 +28,7 @@ public class HotelController {
   }
 
   @Operation(summary = "全件検索", description = "宿泊者情報の全件検索を行います。")
+
   @GetMapping("/guestList")
   public List<GuestDetailDto> getGuestList() {
     return service.getAllGuest();
@@ -33,9 +36,8 @@ public class HotelController {
 
   @Operation(summary = "単一検索", description = "ID、名前、ふりがな、電話番号から宿泊者情報を検索します。")
   @GetMapping("/searchGuest")
-  public List<GuestDetailDto> searchGuest(@ModelAttribute Guest guest,
-      @RequestParam(required = false) ReservationStatus status) {
-    return service.searchGuest(guest, status);
+  public List<GuestDetailDto> searchGuest(@ModelAttribute Guest guest) {
+    return service.searchGuest(guest);
   }
 
   @Operation(summary = "完全一致検索", description = "名前、ふりがな、電話番号から宿泊者情報を完全一致検索します。")

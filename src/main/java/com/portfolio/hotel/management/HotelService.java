@@ -1,18 +1,18 @@
-package com.example.hotelmanagement.service;
+package com.portfolio.hotel.management;
 
-import com.example.hotelmanagement.data.booking.Booking;
-import com.example.hotelmanagement.data.guest.Guest;
-import com.example.hotelmanagement.data.guest.GuestDetailDto;
-import com.example.hotelmanagement.data.guest.GuestDto;
-import com.example.hotelmanagement.data.reservation.ReservationDto;
-import com.example.hotelmanagement.data.reservation.ReservationStatus;
+import com.portfolio.hotel.management.data.booking.Booking;
+import com.portfolio.hotel.management.data.guest.Guest;
+import com.portfolio.hotel.management.data.guest.GuestDetailDto;
+import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.ReservationDto;
+import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import com.example.hotelmanagement.repository.HotelRepository;
-import com.example.hotelmanagement.service.converter.HotelConverter;
+import com.portfolio.hotel.management.repository.HotelRepository;
+import com.portfolio.hotel.management.converter.HotelConverter;
 
 @Service
 public class HotelService {
@@ -26,7 +26,7 @@ public class HotelService {
 
   }
 
-  // ゲスト情報の全権取得
+  // 宿泊者情報の全権取得
   public List<GuestDetailDto> getAllGuest() {
     return converter.convertGuestDetailDto(
         repository.findAllGuest(),
@@ -34,11 +34,10 @@ public class HotelService {
         repository.findAllReservation());
   }
 
-  // ゲスト情報の単一検索
-  public List<GuestDetailDto> searchGuest(Guest guest, ReservationStatus reservationStatus) {
-    String status = reservationStatus.toString();
+  // 宿泊者情報の単一検索
+  public List<GuestDetailDto> searchGuest(Guest guest) {
     return converter.convertGuestDetailDto(
-        repository.searchGuest(guest, status),
+        repository.searchGuest(guest),
         repository.findAllBooking(),
         repository.findAllReservation());
   }
@@ -50,8 +49,10 @@ public class HotelService {
 
   // ゲストの登録
   public void insertGuest(GuestDetailDto guestDetailDto) {
-    guestDetailDto.getGuest().setId(UUID.randomUUID().toString());
-    repository.insertGuest(guestDetailDto.getGuest());
+   if (guestDetailDto.getGuest().getId() == null) {
+     guestDetailDto.getGuest().setId(UUID.randomUUID().toString());
+     repository.insertGuest(guestDetailDto.getGuest());
+   }
     initReservation(guestDetailDto);
   }
 

@@ -1,9 +1,9 @@
-package com.example.hotelmanagement.service.converter;
+package com.portfolio.hotel.management.converter;
 
-import com.example.hotelmanagement.data.booking.BookingDto;
-import com.example.hotelmanagement.data.guest.GuestDetailDto;
-import com.example.hotelmanagement.data.guest.GuestDto;
-import com.example.hotelmanagement.data.reservation.ReservationDto;
+import com.portfolio.hotel.management.data.booking.BookingDto;
+import com.portfolio.hotel.management.data.guest.GuestDetailDto;
+import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.ReservationDto;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
