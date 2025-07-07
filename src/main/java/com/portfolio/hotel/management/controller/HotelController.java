@@ -4,7 +4,6 @@ import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.guest.Guest;
 import com.portfolio.hotel.management.data.guest.GuestDetailDto;
 import com.portfolio.hotel.management.data.guest.GuestDto;
-import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -36,18 +35,18 @@ public class HotelController {
 
   @Operation(summary = "単一検索", description = "ID、名前、ふりがな、電話番号から宿泊者情報を検索します。")
   @GetMapping("/searchGuest")
-  public List<GuestDetailDto> searchGuest(@ModelAttribute Guest guest) {
-    return service.searchGuest(guest);
+  public List<GuestDetailDto> searchGuest(@ModelAttribute GuestDto guestDto) {
+    return service.searchGuest(guestDto);
   }
 
   @Operation(summary = "完全一致検索", description = "名前、ふりがな、電話番号から宿泊者情報を完全一致検索します。")
   @GetMapping("/matchGuest")
-  public GuestDetailDto matchGuest(@ModelAttribute GuestDto guest) {
-    List<GuestDto> matched = service.matchGuest(guest);
+  public GuestDetailDto matchGuest(@ModelAttribute GuestDto guestDto) {
+    List<GuestDto> matched = service.matchGuest(guestDto);
 
     if (matched.isEmpty()) {
       GuestDetailDto dto = new GuestDetailDto();
-      dto.setGuest(guest);
+      dto.setGuest(guestDto);
       return dto;
 
     }
@@ -70,10 +69,10 @@ public class HotelController {
     return ResponseEntity.ok("宿泊プランの登録が完了しました。");
   }
 
-  @Operation(summary = "宿泊者情報の変更", description = "宿泊者情報の変更を行います。")
+  @Operation(summary = "宿泊者の変更", description = "宿泊者の変更を行います。")
   @PutMapping("/editGuest")
-  public ResponseEntity<String> editGuest(@RequestBody GuestDetailDto guestDetailDto) {
-    service.editGuest(guestDetailDto);
+  public ResponseEntity<String> editGuest(@RequestBody Guest guest) {
+    service.editGuest(guest);
     return ResponseEntity.ok("宿泊者情報の変更が完了しました。");
   }
 

@@ -25,10 +25,10 @@ public interface HotelRepository {
   List<ReservationDto> findAllReservation();
 
   // 宿泊者IDから宿泊者を検索
-  List<GuestDto> searchGuest(@Param("guest") Guest guest);
+  List<GuestDto> searchGuest(@Param("guest") GuestDto guestDto);
 
   // 宿泊者IDから宿泊者を完全一致検索
-  List<GuestDto> matchGuest(@Param("guest")GuestDto guest);
+  List<GuestDto> matchGuest(@Param("guest") GuestDto guestDto);
 
   // 宿泊プランIDから金額を検索
   BigDecimal findTotalPriceById(@Param("id") String id);
@@ -46,7 +46,7 @@ public interface HotelRepository {
   void insertReservation(@Param("list") List<ReservationDto> reservationList);
 
   // 宿泊者情報の変更
-  void editGuest(GuestDto guestDto);
+  void editGuest(Guest guest);
 
   // 宿泊予約の変更
   void editReservation(@Param("List") List<ReservationDto> reservationDtoList);

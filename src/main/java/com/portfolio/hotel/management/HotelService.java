@@ -35,16 +35,16 @@ public class HotelService {
   }
 
   // 宿泊者情報の単一検索
-  public List<GuestDetailDto> searchGuest(Guest guest) {
+  public List<GuestDetailDto> searchGuest(GuestDto guestDto) {
     return converter.convertGuestDetailDto(
-        repository.searchGuest(guest),
+        repository.searchGuest(guestDto),
         repository.findAllBooking(),
         repository.findAllReservation());
   }
 
   // 宿泊者の完全一致検索
-  public List<GuestDto> matchGuest(GuestDto guest) {
-    return repository.matchGuest(guest);
+  public List<GuestDto> matchGuest(GuestDto guestDto) {
+    return repository.matchGuest(guestDto);
   }
 
   // ゲストの登録
@@ -84,9 +84,8 @@ public class HotelService {
   }
 
   // 宿泊者の編集
-  public void editGuest(GuestDetailDto guestDetailDto) {
-    repository.editGuest(guestDetailDto.getGuest());
-    repository.editReservation(guestDetailDto.getReservations());
+  public void editGuest(Guest guest) {
+    repository.editGuest(guest);
   }
 
   // チェックイン処理の作成
