@@ -4,6 +4,7 @@ import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.guest.Guest;
 import com.portfolio.hotel.management.data.guest.GuestDetailDto;
 import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.Reservation;
 import com.portfolio.hotel.management.data.reservation.ReservationDto;
 import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import java.time.LocalDate;
@@ -49,10 +50,10 @@ public class HotelService {
 
   // ゲストの登録
   public void insertGuest(GuestDetailDto guestDetailDto) {
-   if (guestDetailDto.getGuest().getId() == null) {
-     guestDetailDto.getGuest().setId(UUID.randomUUID().toString());
-     repository.insertGuest(guestDetailDto.getGuest());
-   }
+    if (guestDetailDto.getGuest().getId() == null) {
+      guestDetailDto.getGuest().setId(UUID.randomUUID().toString());
+      repository.insertGuest(guestDetailDto.getGuest());
+    }
     initReservation(guestDetailDto);
   }
 
@@ -86,6 +87,11 @@ public class HotelService {
   // 宿泊者の編集
   public void editGuest(Guest guest) {
     repository.editGuest(guest);
+  }
+
+  // 宿泊予約の編集
+  public void editReservation(Reservation reservation) {
+    repository.editReservation(reservation);
   }
 
   // チェックイン処理の作成

@@ -4,6 +4,7 @@ import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.guest.Guest;
 import com.portfolio.hotel.management.data.guest.GuestDetailDto;
 import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.Reservation;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -73,8 +74,14 @@ public class HotelController {
   @PutMapping("/editGuest")
   public ResponseEntity<String> editGuest(@RequestBody Guest guest) {
     service.editGuest(guest);
-    return ResponseEntity.ok("宿泊者情報の変更が完了しました。");
+    return ResponseEntity.ok("宿泊者の変更が完了しました。");
   }
+
+  @PutMapping("/editReservation")
+  public ResponseEntity<String> editReservation(@RequestBody Reservation reservation) {
+    return ResponseEntity.ok("宿泊情報の変更が完了しました");
+  }
+
 
   @Operation(summary = "チェックイン", description = "宿泊客のチェックインを行います。")
   @PutMapping("/checkIn")

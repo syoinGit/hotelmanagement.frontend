@@ -2,7 +2,6 @@ package com.portfolio.hotel.management.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.endsWith;
 import static org.mockito.Mockito.verify;
 
 import com.portfolio.hotel.management.HotelService;
@@ -12,7 +11,9 @@ import com.portfolio.hotel.management.data.booking.BookingDto;
 import com.portfolio.hotel.management.data.guest.Guest;
 import com.portfolio.hotel.management.data.guest.GuestDetailDto;
 import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.Reservation;
 import com.portfolio.hotel.management.data.reservation.ReservationDto;
+import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import com.portfolio.hotel.management.repository.HotelRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -130,7 +131,7 @@ class HotelServiceTest {
   }
 
   @Test
-  void ゲスト情報_登録が行われているか確認() {
+  void ゲスト情報登録_登録が行われているか確認() {
     HotelService sut = new HotelService(repository, converter);
 
     GuestDetailDto actual = getGuestDetailDto();
@@ -147,9 +148,21 @@ class HotelServiceTest {
     GuestDto updateGuest = guestCaptor.getValue();
     List<ReservationDto> updateReservation = reservationCaptor.getValue();
 
-    Assertions.assertEquals("山田太郎", updateGuest.getName());
-    Assertions.assertEquals("3822609c-5651-11f0-b59f-a75edf46bde3",
+    assertEquals("山田太郎", updateGuest.getName());
+    assertEquals("3822609c-5651-11f0-b59f-a75edf46bde3",
         updateReservation.getFirst().getBookingId());
+  }
+
+  @Test
+  void ゲスト情報登録_IDが登録済みの場合登録が行われないか確認() {
+    HotelService sut = new HotelService(repository, converter);
+
+    GuestDetailDto actual = getGuestDetailDto();
+    actual.getGuest().setId("3822609c-5651-11f0-b59f-a75edf46bde3");
+    sut.insertGuest(actual);
+
+    verify(repository, Mockito.times(0)).insertGuest(actual.getGuest());
+
   }
 
   @Test
@@ -162,7 +175,7 @@ class HotelServiceTest {
     verify(repository).insertBooking(captor.capture());
     Booking update = captor.getValue();
 
-    Assertions.assertEquals("朝食付きプラン", update.getName());
+    assertEquals("朝食付きプラン", update.getName());
   }
 
   @Test
@@ -177,8 +190,75 @@ class HotelServiceTest {
     verify(repository).editGuest(captor.capture());
     Guest update = captor.getValue();
 
-    Assertions.assertEquals("山田太郎", update.getName());
+    assertEquals("山田太郎", update.getName());
 
+  }
+
+  @Test
+  void 宿泊プランの変更_宿泊予約が変更されているか確認() {
+    HotelService sut = new HotelService(repository, converter);
+    Reservation actual = new Reservation();
+    actual.setTotalPrice(BigDecimal.valueOf(1000));
+
+    sut.editReservation(actual);
+
+    ArgumentCaptor<Reservation> captor = ArgumentCaptor.forClass(Reservation.class);
+    verify(repository).editReservation(captor.capture());
+    Reservation update = captor.getValue();
+
+    assertEquals(BigDecimal.valueOf(1000), update.getTotalPrice());
+
+  }
+
+  @Test
+  void チェックイン処理の作成_チェックインが行われているかの確認() {
+    HotelService sut = new HotelService(repository, converter);
+    String reservationId = "3822609c-5651-11f0-b59f-a75edf46bde3";
+    Mockito.when(repository.findStatusById(reservationId))
+        .thenReturn(ReservationStatus.NOT_CHECKED_IN);
+
+    sut.checkIn(reservationId);
+
+    verify(repository, Mockito.times(1)).findStatusById(reservationId);
+  }
+
+  @Test
+  void チェックイン処理の作成_ステータスが未チェックイン以外の場合エラーが発生するかの確認() {
+    HotelService sut = new HotelService(repository, converter);
+    String reservationId = "3822609c-5651-11f0-b59f-a75edf46bde3";
+    Mockito.when(repository.findStatusById(reservationId))
+        .thenReturn(ReservationStatus.CHECKED_IN);
+
+    Assertions.assertThrows(IllegalStateException.class, () -> {
+      sut.checkIn(reservationId);
+    });
+
+    verify(repository, Mockito.times(1)).findStatusById(reservationId);
+  }
+
+  @Test
+  void チェックアウト処理の作成_チェックアウトが行われているかの確認() {
+    HotelService sut = new HotelService(repository, converter);
+    String reservationId = "3822609c-5651-11f0-b59f-a75edf46bde3";
+    Mockito.when(repository.findStatusById(reservationId))
+        .thenReturn(ReservationStatus.CHECKED_IN);
+
+    sut.checkOut(reservationId);
+    verify(repository, Mockito.times(1)).findStatusById(reservationId);
+  }
+
+  @Test
+  void チェックアウト処理の作成_ステータスがチェックイン済み以外の場合エラーが発生するかの確認() {
+    HotelService sut = new HotelService(repository, converter);
+    String reservationId = "3822609c-5651-11f0-b59f-a75edf46bde3";
+    Mockito.when(repository.findStatusById(reservationId))
+        .thenReturn(ReservationStatus.CHECKED_OUT);
+
+    Assertions.assertThrows(IllegalStateException.class, () -> {
+      sut.checkOut(reservationId);
+    });
+
+    verify(repository, Mockito.times(1)).findStatusById(reservationId);
   }
 
   // 生成用

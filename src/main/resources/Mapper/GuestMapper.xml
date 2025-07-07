@@ -126,7 +126,7 @@
   </insert>
 
   <!-- 宿泊者を変更 -->
-  <update id="editGuest" parameterType="com.portfolio.hotel.management.data.guest.GuestDto">
+  <update id="editGuest" parameterType="com.portfolio.hotel.management.data.guest.Guest">
     UPDATE guest
     SET
     name = #{name},
@@ -135,22 +135,22 @@
     age = #{age},
     region = #{region},
     email = #{email},
-    phone = #{phone}
+    phone = #{phone},
+    deleted = #{deleted}
     WHERE id = #{id}
   </update>
 
   <!-- 宿泊予約を変更 -->
-  <update id="editReservation">
-    <foreach collection="List" item="item" separator=";">
-      UPDATE reservation
-      SET
-      check_in_date = #{item.checkInDate},
-      stay_days = #{item.stayDays},
-      total_price = #{item.totalPrice},
-      status = #{item.status},
-      memo = #{item.memo}
-      WHERE id = #{item.id}
-    </foreach>
+  <update id="editReservation"
+    parameterType="com.portfolio.hotel.management.data.reservation.Reservation">
+    UPDATE reservation
+    SET
+    check_in_date = #{checkInDate},
+    stay_days = #{stayDays},
+    total_price = #{totalPrice},
+    status = #{status},
+    memo = #{memo}
+    WHERE id = #{id}
   </update>
 
   <!-- チェックイン処理の作成 -->

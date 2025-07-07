@@ -4,6 +4,7 @@ import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.booking.BookingDto;
 import com.portfolio.hotel.management.data.guest.Guest;
 import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.Reservation;
 import com.portfolio.hotel.management.data.reservation.ReservationDto;
 import com.portfolio.hotel.management.data.reservation.ReservationStatus;
 import java.math.BigDecimal;
@@ -49,7 +50,7 @@ public interface HotelRepository {
   void editGuest(Guest guest);
 
   // 宿泊予約の変更
-  void editReservation(@Param("List") List<ReservationDto> reservationDtoList);
+  void editReservation(Reservation reservation);
 
   // チェックイン処理
   void checkIn(@Param("id") String id);
