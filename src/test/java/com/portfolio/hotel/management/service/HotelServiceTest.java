@@ -104,30 +104,17 @@ class HotelServiceTest {
 
     GuestDto guest = new GuestDto();
     List<GuestDto> guestDto = new ArrayList<>();
-    List<BookingDto> bookingDto = new ArrayList<>();
-    List<ReservationDto> reservationDto = new ArrayList<>();
-    List<GuestDetailDto> converted = new ArrayList<>();
 
     guest.setName("佐藤花子");
     guest.setKanaName("サトウハナコ");
     guest.setPhone("08098765432");
 
     Mockito.when(repository.matchGuest(guest)).thenReturn(guestDto);
-    Mockito.when(repository.findAllBooking()).thenReturn(bookingDto);
-    Mockito.when(repository.findAllReservation()).thenReturn(reservationDto);
-    Mockito.when(converter.convertGuestDetailDto(guestDto, bookingDto, reservationDto))
-        .thenReturn(converted);
-
-    List<GuestDetailDto> actual = sut.searchGuest(guest);
-
-    verify(repository, Mockito.times(1)).searchGuest(guest);
-    verify(repository, Mockito.times(1)).findAllBooking();
-    verify(repository, Mockito.times(1)).findAllReservation();
-    verify(converter, Mockito.times(1))
-        .convertGuestDetailDto(guestDto, bookingDto, reservationDto);
+    List<GuestDto> actual = sut.matchGuest(guest);
+    verify(repository, Mockito.times(1)).matchGuest(guest);
 
     assertNotNull(actual);
-    assertEquals(converted, actual);
+    assertEquals(guestDto, actual);
   }
 
   @Test
