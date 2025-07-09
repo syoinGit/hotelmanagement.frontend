@@ -40,9 +40,9 @@ public class HotelController {
     return service.searchGuest(guestDto);
   }
 
-  @Operation(summary = "完全一致検索", description = "名前、ふりがな、電話番号から宿泊者情報を完全一致検索します。")
+  @Operation(summary = "完全一致検索", description = "名前、ふりがな、電話番号から宿泊者情報を完全一致検索します。ここで完全位一致したデータは宿泊者情報登録の際に使われます")
   @GetMapping("/matchGuest")
-  public GuestDetailDto matchGuest(@ModelAttribute GuestDto guestDto) {
+  public GuestDetailDto matchGuestForInsert(@ModelAttribute GuestDto guestDto) {
     List<GuestDto> matched = service.matchGuest(guestDto);
 
     if (matched.isEmpty()) {
@@ -56,16 +56,16 @@ public class HotelController {
     return dto;
   }
 
-  @Operation(summary = "ゲスト情報登録", description = "宿泊者情報を入力し、宿泊者情報を登録します。")
+  @Operation(summary = "宿泊者情報登録", description = "宿泊者情報を入力し、宿泊者情報を登録します。")
   @PutMapping("/insertGuest")
-  public ResponseEntity<String> insertStudent(@RequestBody GuestDetailDto guestDetailDto) {
+  public ResponseEntity<String> registerGuest(@RequestBody GuestDetailDto guestDetailDto) {
     service.insertGuest(guestDetailDto);
     return ResponseEntity.ok("宿泊者情報の登録が完了しました。");
   }
 
   @Operation(summary = "宿泊プラン登録", description = "宿泊プランを入力し、登録します。")
   @PutMapping("/insertBooking")
-  public ResponseEntity<String> insertStudent(@RequestBody Booking booking) {
+  public ResponseEntity<String> registerGuest(@RequestBody Booking booking) {
     service.insertBooking(booking);
     return ResponseEntity.ok("宿泊プランの登録が完了しました。");
   }
@@ -77,8 +77,10 @@ public class HotelController {
     return ResponseEntity.ok("宿泊者の変更が完了しました。");
   }
 
+  @Operation(summary = "宿泊情報の変更", description = "宿泊情報の変更を行います。")
   @PutMapping("/editReservation")
   public ResponseEntity<String> editReservation(@RequestBody Reservation reservation) {
+    service.editReservation(reservation);
     return ResponseEntity.ok("宿泊情報の変更が完了しました");
   }
 
@@ -91,7 +93,7 @@ public class HotelController {
 
     // チェックイン処理
     service.checkIn(reservationsId);
-    return ResponseEntity.ok(guestName + "様のチェックインが完了しました");
+    return ResponseEntity.ok(guestName + "様のチェックインが完了しました。");
   }
 
   @Operation(summary = "チェックアウト", description = "宿泊客のチェックアウトを行います。")
@@ -102,6 +104,6 @@ public class HotelController {
 
     // チェックアウト処理
     service.checkOut(reservationsId);
-    return ResponseEntity.ok(guestName + "様のチェックアウトが完了しました");
+    return ResponseEntity.ok(guestName + "様のチェックアウトが完了しました。");
   }
 }
