@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.portfolio.hotel.management.HotelService;
+import com.portfolio.hotel.management.service.HotelService;
 
 @CrossOrigin(origins = "http://localhost:3001")
 @RestController
@@ -42,18 +42,9 @@ public class HotelController {
 
   @Operation(summary = "完全一致検索", description = "名前、ふりがな、電話番号から宿泊者情報を完全一致検索します。ここで完全位一致したデータは宿泊者情報登録の際に使われます")
   @GetMapping("/matchGuest")
-  public GuestDetailDto matchGuestForInsert(@ModelAttribute GuestDto guestDto) {
-    List<GuestDto> matched = service.matchGuest(guestDto);
+  public GuestDetailDto matchGuestForInsert(@ModelAttribute Guest guest) {
+    return service.matchGuest(guest);
 
-    if (matched.isEmpty()) {
-      GuestDetailDto dto = new GuestDetailDto();
-      dto.setGuest(guestDto);
-      return dto;
-
-    }
-    GuestDetailDto dto = new GuestDetailDto();
-    dto.setGuest(matched.getFirst());
-    return dto;
   }
 
   @Operation(summary = "宿泊者情報登録", description = "宿泊者情報を入力し、宿泊者情報を登録します。")

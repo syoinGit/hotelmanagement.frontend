@@ -1,4 +1,4 @@
-package com.portfolio.hotel.management;
+package com.portfolio.hotel.management.service;
 
 import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.guest.Guest;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import com.portfolio.hotel.management.repository.HotelRepository;
-import com.portfolio.hotel.management.converter.HotelConverter;
+import com.portfolio.hotel.management.service.converter.HotelConverter;
 
 @Service
 public class HotelService {
@@ -44,8 +44,18 @@ public class HotelService {
   }
 
   // 宿泊者の完全一致検索
-  public List<GuestDto> matchGuest(GuestDto guestDto) {
-    return repository.matchGuest(guestDto);
+  public GuestDetailDto matchGuest(Guest guest) {
+    GuestDto guestDto = repository.matchGuest(guest);
+    GuestDetailDto dto = new GuestDetailDto();
+
+    // 一致するものがなかった場合、guestの数値を入れる。
+    if (guestDto == null) {
+      dto.setGuest(converter.toGuestDto(guest));
+      // 一致した場合、取得したguestDtoを入れる。
+    } else {
+      dto.setGuest(guestDto);
+    }
+    return dto;
   }
 
   // ゲストの登録

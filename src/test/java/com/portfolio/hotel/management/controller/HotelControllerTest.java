@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.portfolio.hotel.management.HotelService;
+import com.portfolio.hotel.management.service.HotelService;
 import com.portfolio.hotel.management.data.guest.GuestDetailDto;
 import com.portfolio.hotel.management.data.guest.GuestDto;
 import com.portfolio.hotel.management.repository.HotelRepository;

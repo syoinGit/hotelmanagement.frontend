@@ -4,8 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 
-import com.portfolio.hotel.management.HotelService;
-import com.portfolio.hotel.management.converter.HotelConverter;
+import com.portfolio.hotel.management.service.converter.HotelConverter;
 import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.booking.BookingDto;
 import com.portfolio.hotel.management.data.guest.Guest;
@@ -102,20 +101,46 @@ class HotelServiceTest {
   void 宿泊者情報の完全一致致検索_名前_ふりがな_電話番号から宿泊者情報が呼び出せていること() {
     HotelService sut = new HotelService(repository, converter);
 
-    GuestDto guest = new GuestDto();
-    List<GuestDto> guestDto = new ArrayList<>();
-
+    Guest guest = new Guest();
+    GuestDto guestDto = new GuestDto();
     guest.setName("佐藤花子");
     guest.setKanaName("サトウハナコ");
     guest.setPhone("08098765432");
 
     Mockito.when(repository.matchGuest(guest)).thenReturn(guestDto);
-    List<GuestDto> actual = sut.matchGuest(guest);
+    GuestDetailDto actual = sut.matchGuest(guest);
+
     verify(repository, Mockito.times(1)).matchGuest(guest);
+    verify(converter, Mockito.never()).toGuestDto(Mockito.any());
 
     assertNotNull(actual);
-    assertEquals(guestDto, actual);
+    assertEquals(guestDto, actual.getGuest());
   }
+
+  @Test
+  void 宿泊者情報の完全一致致検索_完全一致するものがなく_guestの内容を保存して返しているかを確認() {
+    HotelService sut = new HotelService(repository, converter);
+
+    Guest guest = new Guest();
+    guest.setName("佐藤花子");
+    guest.setKanaName("サトウハナコ");
+
+    GuestDto guestDto = new GuestDto();
+    guestDto.setName("佐藤花子");
+
+
+
+    Mockito.when(repository.matchGuest(guest)).thenReturn(guestDto);
+
+    GuestDetailDto actual = sut.matchGuest(guest);
+
+    verify(repository, Mockito.times(1)).matchGuest(guest);
+    verify(converter, Mockito.times(1)).toGuestDto(guest);
+    assertNotNull(actual);
+    assertEquals("佐藤花子", actual.getGuest().getName());
+
+  }
+
 
   @Test
   void ゲスト情報登録_登録が行われているか確認() {

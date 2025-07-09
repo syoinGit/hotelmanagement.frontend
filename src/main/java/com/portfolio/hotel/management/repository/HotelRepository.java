@@ -25,11 +25,11 @@ public interface HotelRepository {
   // 宿泊予約の全件検索
   List<ReservationDto> findAllReservation();
 
-  // 宿泊者IDから宿泊者を検索
+  // 宿泊者ID、名前、かな名、電話番号から宿泊者を検索
   List<GuestDto> searchGuest(@Param("guest") GuestDto guestDto);
 
   // 宿泊者IDから宿泊者を完全一致検索
-  List<GuestDto> matchGuest(@Param("guest") GuestDto guestDto);
+  GuestDto matchGuest(@Param("guest") Guest guest);
 
   // 宿泊プランIDから金額を検索
   BigDecimal findTotalPriceById(@Param("id") String id);
