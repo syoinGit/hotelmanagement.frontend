@@ -38,7 +38,7 @@ public interface HotelRepository {
   ReservationStatus findStatusById(@Param("id") String id);
 
   // 宿泊者の登録
-  void insertGuest(GuestDto guest);
+  void insertGuest(GuestDto guestDto);
 
   // 宿泊プランの登録
   void insertBooking(@Param("booking") Booking booking);

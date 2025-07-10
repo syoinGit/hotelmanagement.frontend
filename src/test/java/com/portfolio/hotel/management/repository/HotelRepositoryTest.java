@@ -2,10 +2,16 @@ package com.portfolio.hotel.management.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.portfolio.hotel.management.data.booking.Booking;
 import com.portfolio.hotel.management.data.booking.BookingDto;
 import com.portfolio.hotel.management.data.guest.Guest;
 import com.portfolio.hotel.management.data.guest.GuestDto;
+import com.portfolio.hotel.management.data.reservation.Reservation;
 import com.portfolio.hotel.management.data.reservation.ReservationDto;
+import com.portfolio.hotel.management.data.reservation.ReservationStatus;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -58,9 +64,142 @@ class HotelRepositoryTest {
     guest.setName("佐藤花子");
     guest.setKanaName("サトウハナコ");
     guest.setPhone("08098765432");
-
     GuestDto actual = sut.matchGuest(guest);
 
+    assertThat(actual.getId()).isEqualTo("11111111-1111-1111-1111-111111111111");
+    assertThat(actual.getGender()).isEqualTo("FEMALE");
+  }
+
+  @Test
+  void 宿泊プランIDから金額を検索_検索できているか確認() {
+    String bookingId = "aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    BigDecimal actual = sut.findTotalPriceById(bookingId);
+    assertThat(actual).isEqualTo("10000.00");
+  }
+
+  @Test
+  void 宿泊予約IDから宿泊予約情報を検索_検索できているか確認() {
+    String reservationId = "rsv00001-aaaa-bbbb-cccc-000000000001";
+    ReservationStatus actual = sut.findStatusById(reservationId);
+    assertThat(actual).isEqualTo(ReservationStatus.NOT_CHECKED_IN);
+  }
+
+  @Test
+  void 宿泊者の登録処理_宿泊者が登録されているか確認() {
+    GuestDto guestDto = getGuestDto();
+    sut.insertGuest(guestDto);
+
+    List<GuestDto> actual = sut.findAllGuest();
+    assertThat(actual.size()).isEqualTo(3);
+  }
+
+  @Test
+  void 宿泊プランの登録_宿泊プランが登録されているか確認() {
+    Booking booking = getBooking();
+    sut.insertBooking(booking);
+
+    List<BookingDto> actual = sut.findAllBooking();
+    assertThat(actual.size()).isEqualTo(3);
+  }
+
+  @Test
+  void 宿泊情報の登録_宿泊情報が登録されているか確認() {
+    List<ReservationDto> reservationDto = getReservationDto();
+    sut.insertReservation(reservationDto);
+
+    List<ReservationDto> actual = sut.findAllReservation();
+    assertThat(actual.size()).isEqualTo(3);
+  }
+
+  @Test
+  void 宿泊者情報の変更_宿泊者情報が変更されている() {
+    Guest guest = getGuest();
+    guest.setId("11111111-1111-1111-1111-111111111111");
+    sut.editGuest(guest);
+
+    GuestDto guestDto = new GuestDto();
+    guestDto.setName("佐藤華子");
+
+    List<GuestDto> actual = sut.searchGuest(guestDto);
+    assertThat(actual.getFirst().getName()).isEqualTo(guestDto.getName());
+  }
+
+  @Test
+  void 宿泊予約の変更_宿泊予約が変更されていること() {
+    Reservation reservation = getReservation();
+    reservation.setId("rsv00001-aaaa-bbbb-cccc-000000000001");
+    sut.editReservation(reservation);
+
+    ReservationDto reservationDto = new ReservationDto();
+
+
+
+  }
+
+
+  private GuestDto getGuestDto() {
+    GuestDto guestDto = new GuestDto();
+    guestDto.setId("11121111-1111-1111-1111-111111111111");
+    guestDto.setName("佐藤花子");
+    guestDto.setKanaName("サトウハナコ");
+    guestDto.setGender("FEMALE");
+    guestDto.setAge(28);
+    guestDto.setEmail("hanako@example.com");
+    guestDto.setPhone("08098765432");
+
+    return guestDto;
+  }
+
+  private Guest getGuest() {
+    Guest guest = new Guest();
+    guest.setName("佐藤華子");
+    guest.setKanaName("サトウハナコ");
+    guest.setGender("FEMALE");
+    guest.setAge(28);
+    guest.setEmail("hanako@example.com");
+    guest.setPhone("08098765432");
+    return guest;
+  }
+
+  private Booking getBooking() {
+    Booking booking = new Booking();
+    booking.setId("aaaaaaa3-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    booking.setName("朝食付きプラン");
+    booking.setPrice(BigDecimal.valueOf(1000));
+    booking.setDescription("");
+
+    return booking;
+  }
+
+  private List<ReservationDto> getReservationDto() {
+    List<ReservationDto> reservationsDto = new ArrayList<>();
+
+    ReservationDto reservation = new ReservationDto();
+    reservation.setId("aaaaaaa5-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    reservation.setGuestId("11111111-1111-1111-1111-111111111111");
+    reservation.setBookingId("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    reservation.setTotalPrice(BigDecimal.valueOf(1000));
+    reservation.setCheckInDate(LocalDate.now());
+    reservation.setStayDays(1);
+    reservation.setStatus(ReservationStatus.TEMPORARY);
+    reservation.setMemo("");
+
+    reservationsDto.add(reservation);
+    return reservationsDto;
+  }
+
+  private Reservation getReservation() {
+    Reservation reservations = new Reservation();
+
+    ReservationDto reservation = new ReservationDto();
+    reservation.setGuestId("11111111-1111-1111-1111-111111111111");
+    reservation.setBookingId("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    reservation.setTotalPrice(BigDecimal.valueOf(1000));
+    reservation.setCheckInDate(LocalDate.now());
+    reservation.setStayDays(1);
+    reservation.setStatus(ReservationStatus.TEMPORARY);
+    reservation.setMemo("");
+    return reservations;
   }
 
 

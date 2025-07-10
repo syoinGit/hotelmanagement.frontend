@@ -48,12 +48,19 @@
     WHERE name = #{guest.name}
     AND kana_name = #{guest.kanaName}
     AND phone = #{guest.phone}
-    AND deleted = 0
+    AND deleted = false
   </select>
 
   <!-- 合計金額をIDから検索 -->
   <select id="findTotalPriceById" resultType="java.math.BigDecimal">
     SELECT price FROM booking WHERE id = #{id}
+  </select>
+
+  <select id="findStatusById"
+    resultType="com.portfolio.hotel.management.data.reservation.ReservationStatus">
+    SELECT status
+    FROM reservation
+    WHERE id = #{id}
   </select>
 
   <!-- 宿泊者を登録 -->

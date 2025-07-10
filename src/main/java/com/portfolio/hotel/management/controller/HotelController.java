@@ -44,7 +44,6 @@ public class HotelController {
   @GetMapping("/matchGuest")
   public GuestDetailDto matchGuestForInsert(@ModelAttribute Guest guest) {
     return service.matchGuest(guest);
-
   }
 
   @Operation(summary = "宿泊者情報登録", description = "宿泊者情報を入力し、宿泊者情報を登録します。")
