@@ -40,6 +40,12 @@
     </where>
   </select>
 
+  <select id="searchReservation"
+    resultType="com.portfolio.hotel.management.data.reservation.Reservation"
+    parameterType="string">
+    SELECT * FROM reservation WHERE id = #{id}
+  </select>
+
   <!-- 名前・ふりがな・電話番号で完全一致検索 -->
   <select id="matchGuest" parameterType="com.portfolio.hotel.management.data.guest.Guest"
     resultType="com.portfolio.hotel.management.data.guest.GuestDto">

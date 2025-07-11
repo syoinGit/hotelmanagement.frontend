@@ -55,8 +55,6 @@ class HotelControllerTest {
     when(service.searchGuest(any())).thenReturn(List.of(guestDetailDto));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/searchGuest")
-            .param("name", "佐藤花子")
-            .param("kanaName", "サトウハナコ")
             .param("phone", "08098765432"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].guest.name").value("佐藤花子"));
@@ -65,6 +63,15 @@ class HotelControllerTest {
   @Test
   void 宿泊者情報の完全一致検索_名前_かな名_電話番号から宿泊者情報を検索できること()
       throws Exception {
+    GuestDto guestDto = new GuestDto();
+    guestDto.setName("佐藤花子");
+    guestDto.setKanaName("サトウハナコ");
+    guestDto.setPhone("08098765432");
+
+    GuestDetailDto guestDetailDto = new GuestDetailDto();
+    guestDetailDto.setGuest(guestDto);
+
+    when(service.matchGuest(any())).thenReturn(guestDetailDto);
 
     mockMvc.perform(MockMvcRequestBuilders.get("/matchGuest")
             .param("name", "佐藤花子")

@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import jdk.jshell.Snippet.Status;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,15 @@ class HotelRepositoryTest {
     assertThat(result.getKanaName()).isEqualTo("サトウハナコ");
     assertThat(result.getGender()).isEqualTo("FEMALE");
 
+  }
+
+  @Test
+  void 宿泊予約の単一検索_IDから宿泊予約を検索できているか確認() {
+    String reservationId = "rsv00001-aaaa-bbbb-cccc-000000000001";
+
+    Reservation actual = sut.searchReservation(reservationId);
+    assertThat(actual.getGuestId()).isEqualTo("11111111-1111-1111-1111-111111111111");
+    assertThat(actual.getBookingId()).isEqualTo("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
   }
 
   @Test
@@ -130,10 +140,26 @@ class HotelRepositoryTest {
     reservation.setId("rsv00001-aaaa-bbbb-cccc-000000000001");
     sut.editReservation(reservation);
 
-    ReservationDto reservationDto = new ReservationDto();
+    Reservation actual = sut.searchReservation("rsv00001-aaaa-bbbb-cccc-000000000001");
+    assertThat(actual.getStatus()).isEqualTo(reservation.getStatus());
+  }
 
+  @Test
+  void チェックイン処理_ステータスがチェックインに変わっているか確認() {
+    String reservationId = "rsv00001-aaaa-bbbb-cccc-000000000001";
+    sut.checkIn(reservationId);
+    Reservation actual = sut.searchReservation(reservationId);
 
+    assertThat(actual.getStatus()).isEqualTo(ReservationStatus.CHECKED_IN);
+  }
 
+  @Test
+  void チェックイン処理_ステータスがチェックアウトに変わっているか確認() {
+    String reservationId = "rsv00002-bbbb-cccc-dddd-000000000002";
+    sut.checkOut(reservationId);
+    Reservation actual = sut.searchReservation(reservationId);
+
+    assertThat(actual.getStatus()).isEqualTo(ReservationStatus.CHECKED_OUT);
   }
 
 
@@ -189,18 +215,15 @@ class HotelRepositoryTest {
   }
 
   private Reservation getReservation() {
-    Reservation reservations = new Reservation();
+    Reservation reservation = new Reservation();
 
-    ReservationDto reservation = new ReservationDto();
     reservation.setGuestId("11111111-1111-1111-1111-111111111111");
     reservation.setBookingId("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-    reservation.setTotalPrice(BigDecimal.valueOf(1000));
+    reservation.setTotalPrice(BigDecimal.valueOf(2000));
     reservation.setCheckInDate(LocalDate.now());
     reservation.setStayDays(1);
-    reservation.setStatus(ReservationStatus.TEMPORARY);
+    reservation.setStatus(ReservationStatus.NOT_CHECKED_IN);
     reservation.setMemo("");
-    return reservations;
+    return reservation;
   }
-
-
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.portfolio.hotel.management.service.HotelService;
 
-@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class HotelController {
 
@@ -28,7 +28,6 @@ public class HotelController {
   }
 
   @Operation(summary = "全件検索", description = "宿泊者情報の全件検索を行います。")
-
   @GetMapping("/guestList")
   public List<GuestDetailDto> getGuestList() {
     return service.getAllGuest();
@@ -79,9 +78,6 @@ public class HotelController {
   @PutMapping("/checkIn")
   public ResponseEntity<String> checkIn(@RequestParam String reservationsId,
       @RequestParam String guestName) {
-    // 会計などの処理を作る。
-
-    // チェックイン処理
     service.checkIn(reservationsId);
     return ResponseEntity.ok(guestName + "様のチェックインが完了しました。");
   }
@@ -90,9 +86,6 @@ public class HotelController {
   @PutMapping("/checkOut")
   public ResponseEntity<String> checkOut(@RequestParam String reservationsId,
       @RequestParam String guestName) {
-    // 会計などの処理を作る。
-
-    // チェックアウト処理
     service.checkOut(reservationsId);
     return ResponseEntity.ok(guestName + "様のチェックアウトが完了しました。");
   }

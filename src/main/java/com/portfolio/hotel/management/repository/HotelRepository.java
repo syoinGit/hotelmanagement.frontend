@@ -15,7 +15,6 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface HotelRepository {
 
-
   // 宿泊者の全件検索
   List<GuestDto> findAllGuest();
 
@@ -27,6 +26,9 @@ public interface HotelRepository {
 
   // 宿泊者ID、名前、かな名、電話番号から宿泊者を検索
   List<GuestDto> searchGuest(@Param("guest") GuestDto guestDto);
+
+  // 宿泊予約IDから、宿泊予約を検索
+  Reservation searchReservation(@Param("id")String id);
 
   // 宿泊者IDから宿泊者を完全一致検索
   GuestDto matchGuest(@Param("guest") Guest guest);
