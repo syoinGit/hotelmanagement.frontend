@@ -1,0 +1,80 @@
+/* src/components/EditGuestModal.css */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 32px; /* パディングを広めに調整 */
+  border-radius: 10px;
+  width: 450px;
+  max-width: 95%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.modal-title {
+  margin-bottom: 24px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.modal-form label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 14px; /* ラベルのフォントサイズ調整 */
+}
+
+.modal-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  margin-bottom: 16px; /* 変更: スペースを少し広げる */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px; /* 入力欄の文字サイズ調整 */
+}
+
+.modal-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-cancel {
+  background-color: #ccc;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
