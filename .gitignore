@@ -1,37 +1,20 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# === Node.js (frontend) ===
+/frontend/node_modules
+/frontend/build
+/frontend/.pnp
+/frontend/pnp.js
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# === Spring Boot (backend) ===
+/backend/target
+/backend/.idea
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# === Logs & Misc ===
+*.log
+.DS_Store
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# === Environment Files ===
+.env
+.env.*.local
 
-### VS Code ###
-.vscode/
+# === Coverage (React testing) ===
+/frontend/coverage
