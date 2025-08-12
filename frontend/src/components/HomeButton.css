@@ -1,0 +1,20 @@
+/* src/components/HomeButton.css */
+.home-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #1976d2;
+  color: white;
+  padding: 12px 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: background-color 0.2s;
+}
+
+.home-button:hover {
+  background-color: #1565c0;
+}

@@ -1,0 +1,136 @@
+.top-page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
+  color: #333;
+  background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
+  padding: 0;
+  margin: 0;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom right, #f0f4ff, #eae7ff); /* 任意の背景グラデもOK */
+}
+
+/* ヘッダー */
+.top-header {
+  background-color: #ffffffdd;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between; /* ← ロゴとボタンを左右配置 */
+  align-items: center;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 80px; /* ロゴ画像の高さ */
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.logo-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+/* ロゴ */
+.logo {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #4f46e5;
+  margin: 0;
+}
+
+/* ログインボタン */
+.login-button {
+  background-color: #6c63ff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #5548e0;
+}
+
+/* メインビジュアル */
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0; /* ← 追加して空間を少しゆるめに */
+  width: 100%;
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+}
+
+/* アプリの説明（3つの特徴） */
+.top-description {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 2rem;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.feature {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  margin: 1rem;
+}
+
+.feature h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* スタートボタン */
+.top-start {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.start-button {
+  font-size: 1.2rem;
+  padding: 12px 32px;
+  border: none;
+  background-color: #4f46e5;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+  background-color: #3730a3;
+}

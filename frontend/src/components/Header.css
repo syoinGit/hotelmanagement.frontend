@@ -1,0 +1,40 @@
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 1rem; /* ⬅ 少しコンパクトに */
+  background-color: #e5e7eb;
+  border-bottom: 1px solid #bbb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.logo-image {
+  height: 50px; /* ⬅ さらに少し小さめ */
+}
+
+.header-nav {
+  display: flex;
+  gap: 0.5rem; /* ⬅ 間隔をさらに詰めてスリムに */
+}
+
+.header-button {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem; /* ⬅ 縦横余白をコンパクトに */
+  background-color: #4f46e5;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.8rem; /* ⬅ 少しだけ小さく */
+  transition: background-color 0.2s ease;
+}
+
+.header-button:hover {
+  background-color: #4338ca;
+}
+
+.header-button svg {
+  font-size: 1.1rem; /* ⬅ アイコンだけ少し大きめに */
+}

@@ -1,0 +1,95 @@
+.checkin-container {
+  padding: 2rem;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+.reservation-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* 各セクション（ゲスト・予約など）を分ける */
+.card-section {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.card-section:last-child {
+  border-bottom: none;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.card-item {
+  display: flex;
+  margin: 0.25rem 0;
+}
+
+.card-label {
+  width: 110px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.card-value {
+  color: #111827;
+}
+
+/* ボタン */
+.reservation-card button {
+  padding: 8px 16px;
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reservation-card button:hover {
+  background-color: #4f46e5;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+  .card-item {
+    flex-direction: column;
+  }
+
+  .card-label {
+    width: auto;
+    margin-bottom: 4px;
+  }
+
+  .reservation-card {
+    padding: 1rem;
+  }
+
+  .reservation-card button {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+
+  .checkin-container {
+    grid-template-columns: 1fr;
+  }
+}
