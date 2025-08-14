@@ -48,7 +48,7 @@ const TopPage = () => {
 
       {/* スタートボタン */}
       <footer className="top-start">
-        <button onClick={() => navigate("/home")} className="start-button">
+        <button onClick={() => navigate("/login")} className="start-button">
           さあ、始めよう
         </button>
       </footer>

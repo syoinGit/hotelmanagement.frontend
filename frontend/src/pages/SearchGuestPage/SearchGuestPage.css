@@ -1,3 +1,11 @@
+.page-title {
+  text-align: center;       /* 中央寄せ */
+  margin-top: 30px;         /* 上の余白 */
+  margin-bottom: 20px;      /* 下の余白 */
+  font-size: 1.0rem;        /* タイトルの大きさ（必要に応じて） */
+  font-weight: bold;
+}
+
 /* カード表示用のグリッドレイアウト */
 .card-grid {
   display: grid;

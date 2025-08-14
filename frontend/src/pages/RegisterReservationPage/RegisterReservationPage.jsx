@@ -1,11 +1,31 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { FaSearch } from "react-icons/fa";
 import RegisterModal from "../../components/Modal/RegisterModal/RegisterModal";
+import "../SearchGuestPage/SearchGuestPage.css"; // ← 既存の検索フォーム用CSSを流用
 
 const API_BASE =
   process.env.REACT_APP_API_BASE ||
   (typeof window !== "undefined" && window.API_BASE) ||
   "http://localhost:8080";
+
+/** ひらがな/半角カナ → 全角カタカナ へ正規化し、余計な文字を除去 */
+const toKatakana = (input) => {
+  if (!input) return "";
+  // 半角→全角など互換分解で正規化
+  let s = input.normalize("NFKC");
+
+  // ひらがな→カタカナ
+  s = s.replace(/[\u3041-\u3096]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) + 0x60)
+  );
+
+  // 許可する文字：全角カタカナ・長音符・中点・スペース
+  s = s.replace(/[^\u30A0-\u30FFー・\s]/g, "");
+
+  // 先頭・末尾のスペースを整える
+  return s.trim().replace(/\s{2,}/g, " ");
+};
 
 const RegisterReservationPage = () => {
   // 検索フォーム
@@ -26,7 +46,14 @@ const RegisterReservationPage = () => {
   const [modalGuest, setModalGuest] = useState(null);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // フリガナは強制カタカナ入力
+    if (name === "kanaName") {
+      setForm((prev) => ({ ...prev, kanaName: toKatakana(value) }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   // 完全一致検索（/guest/match は GuestRegistration を返す想定）
@@ -82,47 +109,63 @@ const RegisterReservationPage = () => {
   };
 
   return (
-    <div>
-      <h2>宿泊者検索（完全一致）→ 登録</h2>
+    <div className="search-guest-container">
+      {/* タイトル（中央寄せ & 余白は SearchGuestPage.css の .page-title 側で制御） */}
+      <h1 className="page-title">宿泊者検索（完全一致）→ 登録</h1>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <input
-          type="text"
-          name="name"
-          placeholder="名前（完全一致）"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="kanaName"
-          placeholder="ふりがな（完全一致）"
-          value={form.kanaName}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="電話番号（完全一致）"
-          value={form.phone}
-          onChange={handleChange}
-        />
-        <button onClick={handleSearch}>検索</button>
+      {/* ====== 検索フォーム：SearchGuestPage と同じ構造/クラス ====== */}
+      <div className="form search-form">
+        <div className="form-row">
+          <input
+            type="text"
+            name="name"
+            placeholder="名前（完全一致）"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="kanaName"
+            placeholder="フリガナ（全角カタカナ・完全一致）"
+            value={form.kanaName}
+            onChange={handleChange}
+            inputMode="kana" // モバイルにヒント
+          />
+        </div>
+
+        <div className="form-row">
+          <input
+            type="text"
+            name="phone"
+            placeholder="電話番号（完全一致）"
+            value={form.phone}
+            onChange={handleChange}
+            inputMode="numeric"
+          />
+        </div>
+
+        <div className="form-row form-actions">
+          <button className="search-button" onClick={handleSearch}>
+            <FaSearch style={{ marginRight: 6 }} />
+            検索する
+          </button>
+        </div>
       </div>
 
+      {/* ====== 検索結果表示 ====== */}
       {searched && (
-        <div style={{ marginTop: 12 }}>
-          <p>{info}</p>
+        <div className="match-result">
+          <p className="match-info">{info}</p>
 
           {matchedGuest ? (
-            <div style={{ background: "#f7f7f7", padding: 12, borderRadius: 6 }}>
-              <div style={{ fontWeight: 600, marginBottom: 6 }}>一致した宿泊者</div>
+            <div className="match-card">
+              <div className="match-card__title">一致した宿泊者</div>
               <div>名前：{matchedGuest.name}</div>
-              <div>ふりがな：{matchedGuest.kanaName}</div>
+              <div>フリガナ：{matchedGuest.kanaName}</div>
               <div>電話番号：{matchedGuest.phone}</div>
 
-              <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
-                <button onClick={() => openModal("existing")}>
+              <div className="match-card__actions">
+                <button className="primary" onClick={() => openModal("existing")}>
                   この宿泊者に追加登録
                 </button>
                 <button onClick={() => openModal("new")}>
@@ -131,8 +174,8 @@ const RegisterReservationPage = () => {
               </div>
             </div>
           ) : (
-            <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={() => openModal("new")}>
+            <div className="match-card__actions">
+              <button className="primary" onClick={() => openModal("new")}>
                 新規登録として登録
               </button>
             </div>
@@ -140,7 +183,7 @@ const RegisterReservationPage = () => {
         </div>
       )}
 
-      {/* 登録モーダル（情報セット・ロックはモーダル側が自動処理） */}
+      {/* 登録モーダル */}
       <RegisterModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

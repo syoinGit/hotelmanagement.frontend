@@ -41,8 +41,10 @@ const SearchGuestPage = () => {
   };
 
   return (
-
-    <div className="search-guest-container">
+<div className="search-guest-container">
+        <div className="page-title">
+      <h1>宿泊者検索</h1>
+    </div>
       <div className="form search-form">
         <div className="form-row">
           <input
