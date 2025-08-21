@@ -102,52 +102,75 @@ const SearchGuestPage = () => {
 
       {error && <p className="error">{error}</p>}
 
+<div className="results-container">
+  <div className="card-grid">
+    {results.map((guestDetail, index) => {
+      const { guest, reservations = [], bookings = [] } = guestDetail;
 
-      <div className="results-container">
-        <div className="card-grid">
-          {results
-            .filter((g) => showCheckedOut || g.reservations?.some((r) => r.status !== 'CHECKED_OUT'))
-            .map((guestDetail, index) => {
-              const { guest, reservations, bookings } = guestDetail;
+      // チェックアウト済みの表示ON/OFFに応じて予約を絞り込み
+      const visibleReservations = reservations.filter(
+        (r) => showCheckedOut || r.status !== 'CHECKED_OUT'
+      );
 
-              return reservations.map((reservation, i) => {
-                const booking = bookings[i];
+      // 表示対象の予約がないゲストはスキップ
+      if (visibleReservations.length === 0) return null;
 
-                return (
-                  <div key={`${index}-${i}`} className="reservation-card">
-                    <div className="guest-info" style={{ marginBottom: '10px' }}>
-                      <h3><FaUser /> 宿泊者情報</h3>
-                      <p><strong>名前:</strong> {guest.name}</p>
-                      <p><strong>フリガナ:</strong> {guest.kanaName}</p>
-                      <p><strong><FaPhone /> 電話番号:</strong> {guest.phone}</p>
-                      <button className="edit-button" onClick={() => {
-                        setSelectedGuestDetail(guestDetail);
-                        setGuestModalOpen(true);
-                      }}>
-                        <FaEdit /> ゲスト情報を編集
-                      </button>
-                    </div>
+      return (
+        <div key={guest?.id || index} className="reservation-card">
+          {/* 宿泊者情報：1ゲストにつき1つだけ */}
+          <div className="guest-info" style={{ marginBottom: '10px' }}>
+            <h3><FaUser /> 宿泊者情報</h3>
+            <p><strong>名前:</strong> {guest.name}</p>
+            <p><strong>フリガナ:</strong> {guest.kanaName}</p>
+            <p><strong><FaPhone /> 電話番号:</strong> {guest.phone}</p>
+            <button
+              className="edit-button"
+              onClick={() => {
+                setSelectedGuestDetail(guestDetail);
+                setGuestModalOpen(true);
+              }}
+            >
+              <FaEdit /> ゲスト情報を編集
+            </button>
+          </div>
 
-                    <details className="reservation-info" style={{ borderTop: '1px solid #ddd', paddingTop: '10px' }}>
-                      <summary><strong><FaBed /> 宿泊情報</strong></summary>
-                      <p><strong><FaCalendarAlt /> チェックイン日:</strong> {reservation.checkInDate}</p>
-                      <p><strong><FaCalendarAlt /> チェックアウト日:</strong> {reservation.checkOutDate}</p>
-                      <p><strong>宿泊日数:</strong> {reservation.stayDays} 泊</p>
-                      <p><strong>プラン名:</strong> {booking?.name ?? '不明'}</p>
-                      <p><strong><FaClipboardList /> ステータス:</strong> {reservation.status}</p>
-                      <button className="edit-button" onClick={() => {
-                        setSelectedReservation(reservation);
-                        setReservationModalOpen(true);
-                      }}>
-                        <FaEdit /> 予約情報を編集
-                      </button>
-                    </details>
-                  </div>
-                );
-              });
+          {/* 宿泊情報：このゲストの“対象予約”を一覧表示 */}
+          <details className="reservation-info" style={{ borderTop: '1px solid #ddd', paddingTop: '10px' }}>
+            <summary>
+              <strong><FaBed /> 宿泊情報（{visibleReservations.length}件）</strong>
+            </summary>
+
+            {visibleReservations.map((reservation) => {
+              // booking は id で引く（同インデックス前提から脱却）
+              const booking =
+                bookings.find((b) => b.id === reservation.bookingId) || null;
+
+              return (
+                <div key={reservation.id} className="reservation-row" style={{ padding: '8px 0', borderBottom: '1px dashed #e5e7eb' }}>
+                  <p><strong><FaCalendarAlt /> チェックイン日:</strong> {reservation.checkInDate}</p>
+                  <p><strong><FaCalendarAlt /> チェックアウト日:</strong> {reservation.checkOutDate}</p>
+                  <p><strong>宿泊日数:</strong> {reservation.stayDays} 泊</p>
+                  <p><strong>プラン名:</strong> {booking?.name ?? '不明'}</p>
+                  <p><strong><FaClipboardList /> ステータス:</strong> {reservation.status}</p>
+
+                  <button
+                    className="edit-button"
+                    onClick={() => {
+                      setSelectedReservation(reservation);
+                      setReservationModalOpen(true);
+                    }}
+                  >
+                    <FaEdit /> この予約を編集
+                  </button>
+                </div>
+              );
             })}
+          </details>
         </div>
-      </div>
+      );
+    })}
+  </div>
+</div>
 
       {guestModalOpen && selectedGuestDetail && (
         <EditGuestModal
