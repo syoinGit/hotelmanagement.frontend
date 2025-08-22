@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-
 import TopPage from './pages/TopPage/TopPage.jsx';
 import Home from './pages/Home/Home.jsx';
+import RegisterUserPage from './pages/RegisterUserPage/RegisterUserPage.jsx';
 import HomeButton from './components/HomeButton.jsx';
 import TopHeader from './components/TopHeader.jsx';
 import LoginPage from './pages/LoginPage/LoginPage.jsx';
@@ -26,6 +26,7 @@ const AppLayout = () => {
         <Route path="/" element={<TopPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register-user" element={<RegisterUserPage/>} />
         <Route path="/guests" element={<GuestList />} />
         <Route path="/bookings" element={<BookingListPage />} />
         <Route path="/search" element={<SearchGuestPage />} />

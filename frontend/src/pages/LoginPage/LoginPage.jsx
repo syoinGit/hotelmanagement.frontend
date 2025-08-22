@@ -55,7 +55,7 @@ const LoginPage = () => {
         ゲストログイン
       </button>
       <p style={{ marginTop: "1rem" }}>
-        アカウントをお持ちでない方は <Link to="/register">新規登録</Link>
+        アカウントをお持ちでない方は <Link to="/register-user">新規登録</Link>
       </p>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
