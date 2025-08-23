@@ -16,25 +16,34 @@ import CheckOutPage from './pages/CheckOutPage/CheckOutPage.jsx';
 
 const AppLayout = () => {
   const location = useLocation();
-  const hideHeaderPaths = ['/', '/login'];
+
+  const hideHeaderPaths = ['/', '/login', '/register-user'];
+  const hideHomeButtonPaths = ['/', '/login', '/register-user'];
+
+  const hideHeader = hideHeaderPaths.includes(location.pathname);
+  const hideHomeButton = hideHomeButtonPaths.includes(location.pathname);
 
   return (
     <>
-      <HomeButton />
-      {!hideHeaderPaths.includes(location.pathname) && <TopHeader />}
+      {/* ヘッダーは必要なページだけ表示 */}
+      {!hideHeader && <TopHeader />}
+
       <Routes>
         <Route path="/" element={<TopPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register-user" element={<RegisterUserPage/>} />
+        <Route path="/register-user" element={<RegisterUserPage />} />
         <Route path="/guests" element={<GuestList />} />
         <Route path="/bookings" element={<BookingListPage />} />
         <Route path="/search" element={<SearchGuestPage />} />
         <Route path="/match" element={<RegisterReservationPage />} />
         <Route path="/register-booking" element={<RegisterBookingPage />} />
         <Route path="/check-in" element={<CheckInPage />} />
-        <Route path='/check-out' element={<CheckOutPage/>} />
+        <Route path="/check-out" element={<CheckOutPage />} />
       </Routes>
+
+      {/* Homeボタンも条件表示（ログイン/登録/トップでは非表示） */}
+      {!hideHomeButton && <HomeButton />}
     </>
   );
 };

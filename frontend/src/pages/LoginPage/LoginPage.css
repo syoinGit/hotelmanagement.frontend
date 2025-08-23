@@ -1,0 +1,127 @@
+/* ========== Login Page ========== */
+
+/* カード本体 */
+.login-container {
+  width: min(680px, 92vw);
+  margin: clamp(6vh, 10vh, 12vh) auto;
+  padding: 2.25rem 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(20, 25, 40, 0.12);
+  text-align: center;
+}
+
+/* 子要素はみ出し防止（padding/border込みで計算） */
+.login-container *,
+.login-container *::before,
+.login-container *::after {
+  box-sizing: border-box;
+}
+
+/* タイトル */
+.login-title {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.6rem, 2.2vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #1f2937;
+}
+
+/* 入力欄 */
+.login-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 1rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  outline: none;
+  background: #f9fafb;
+  font-size: 0.98rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.login-input:focus {
+  border-color: #6aa7ff;
+  box-shadow: 0 0 0 3px rgba(106, 167, 255, 0.18);
+  background: #fff;
+}
+
+/* ボタン行（同幅・中央） */
+.login-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.8rem 0 1.05rem;
+  width: 100%;
+}
+
+/* ボタン共通 */
+.btn {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 0.04s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  width: 100%;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* プライマリ */
+.btn.primary {
+  background: #4a7dff;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(74, 125, 255, 0.28);
+}
+.btn.primary:hover { background: #3e70f2; }
+.btn.primary:disabled {
+  background: #a7b9f7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ゴースト */
+.btn.ghost {
+  background: #fff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+.btn.ghost:hover {
+  background: #f3f4f6;
+  border-color: #c7ccd5;
+}
+
+/* 補助テキスト */
+.register-hint {
+  margin-top: 0.25rem;
+  font-size: 0.96rem;
+  color: #4b5563;
+  line-height: 1.65;
+}
+.register-hint a { color: #4a7dff; font-weight: 600; }
+.register-hint a:hover { text-decoration: underline; }
+
+/* エラー表示 */
+.error-text {
+  margin-top: 0.7rem;
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+/* スモールスクリーン調整 */
+@media (max-width: 640px) {
+  .login-container {
+    width: min(520px, 92vw);
+    margin: 6vh auto;
+    padding: 1.9rem 1.25rem;
+    border-radius: 14px;
+  }
+  .login-title { margin-bottom: 1.1rem; }
+  .login-actions { grid-template-columns: 1fr; gap: 0.6rem; }
+}

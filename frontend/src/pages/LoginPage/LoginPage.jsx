@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const [id, setId] = useState("");
@@ -10,15 +11,12 @@ const LoginPage = () => {
 
   const handleLogin = async (loginId, loginPassword) => {
     const params = new URLSearchParams();
-    params.append("id", loginId);  // Spring Securityに合わせる
+    params.append("id", loginId);
     params.append("password", loginPassword);
-
     try {
       await axios.post("http://localhost:8080/login", params, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        withCredentials: true, // セッションクッキー送信
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
       });
       navigate("/home");
     } catch (err) {
@@ -28,36 +26,45 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: "2rem" }}>
-      <h2>ログイン</h2>
+    <div className="login-container">
+      <h2 className="login-title">ログイン</h2>
+
       <input
         type="text"
         value={id}
         onChange={(e) => setId(e.target.value)}
         placeholder="ID"
-        style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+        className="login-input"
       />
       <input
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="パスワード"
-        style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+        className="login-input"
       />
-      <button
-        onClick={() => handleLogin(id, password)}
-        disabled={!id || !password}
-        style={{ marginRight: "1rem" }}
-      >
-        ログイン
-      </button>
-      <button onClick={() => handleLogin("testuser01", "testpass123")}>
-        ゲストログイン
-      </button>
-      <p style={{ marginTop: "1rem" }}>
+
+      <div className="login-actions">
+        <button
+          onClick={() => handleLogin(id, password)}
+          disabled={!id || !password}
+          className="btn primary"
+        >
+          ログイン
+        </button>
+        <button
+          onClick={() => handleLogin("testuser01", "testpass123")}
+          className="btn ghost"
+        >
+          ゲストログイン
+        </button>
+      </div>
+
+      <p className="register-hint">
         アカウントをお持ちでない方は <Link to="/register-user">新規登録</Link>
       </p>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {error && <p className="error-text">{error}</p>}
     </div>
   );
 };

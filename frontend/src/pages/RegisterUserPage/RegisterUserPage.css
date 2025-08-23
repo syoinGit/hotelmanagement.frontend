@@ -1,0 +1,133 @@
+/* 背景（淡いグラデ） */
+.register-page-bg {
+  min-height: 100vh;
+  padding: 6vh 4vw;
+  background: radial-gradient(1200px 800px at 50% 0%, #eef2ff 0%, #f7f7fb 40%, #fafbff 100%);
+  display: grid;
+  place-items: start center; /* 上寄せ中央配置（微妙に上に） */
+}
+
+/* カード */
+.register-card {
+  width: min(520px, 92vw);
+  margin-top: 5vh;
+  padding: 2.4rem 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(20, 25, 40, 0.12);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* タイトル */
+.register-title {
+  margin: 0 0 1.6rem;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: 0.02em;
+}
+
+/* フォーム */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 入力群を中央に */
+  gap: 1rem;
+}
+
+/* ラベル + 入力を縦に並べる */
+.form-row {
+  width: 100%;
+  max-width: 380px;      /* 入力幅を中央に固定 */
+  text-align: left;      /* ラベルは読みやすく左寄せ */
+}
+
+/* ラベル */
+.form-label {
+  display: block;
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: #4b5563;
+  font-weight: 700;
+}
+
+/* 入力 */
+.form-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  font-size: 1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #6aa7ff;
+  box-shadow: 0 0 0 3px rgba(106, 167, 255, 0.18);
+  background: #fff;
+}
+
+/* 送信エリア（ボタン中央） */
+.submit-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* ボタン */
+.btn {
+  height: 46px;
+  padding: 0 1rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: transform 0.04s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.primary {
+  width: min(380px, 100%);
+  background: #4a7dff;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(74, 125, 255, 0.28);
+}
+.btn.primary:hover { background: #3e70f2; }
+.btn.primary:disabled {
+  background: #a7b9f7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* メッセージ */
+.message {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.message.success { color: #0b905b; }
+.message.error   { color: #d32f2f; }
+
+/* スモールスクリーン */
+@media (max-width: 480px) {
+  .register-card {
+    margin-top: 2vh;
+    padding: 1.6rem 1rem;
+  }
+  .register-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.1rem;
+  }
+  .form-row {
+    max-width: 100%;
+  }
+}
