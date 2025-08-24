@@ -1,30 +1,114 @@
+/* コンテナ */
 .booking-list-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 24px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  font-family: 'Helvetica Neue', sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
 }
 
+.booking-list-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+/* テーブルラッパ（横スクロール保険） */
 .booking-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden; /* 角丸に合わせてはみ出し防止 */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  font-size: 0.95rem;
 }
 
-.booking-table th,
-.booking-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
+/* ヘッダー */
+.booking-table thead th {
+  background: #f6f7fb;
+  color: #34495e;
   text-align: left;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #e6e8ef;
+  font-weight: 600;
 }
 
-.booking-table th {
-  background-color: #f0f4f8;
+/* セル */
+.booking-table tbody td {
+  padding: 0.9rem 1rem;
+  color: #444;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
 }
 
-.booking-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+/* 交互行 */
+.booking-table tbody tr:nth-child(odd) {
+  background: #fcfcfe;
+}
+
+/* 最終行のボーダー消す */
+.booking-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 価格の見栄えアップ */
+.booking-table td:nth-child(3) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 利用可能の○/✕を少し強調 */
+.booking-table td:last-child {
+  font-weight: 600;
+}
+
+/* エラーメッセージ（既存のクラス名利用） */
+.error-message {
+  color: #c0392b;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+/* スマホ対応 */
+@media (max-width: 640px) {
+  .booking-list-container {
+    padding: 1.5rem 1rem;
+  }
+  .booking-list-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.4rem;
+  }
+  .booking-table thead {
+    display: none; /* 小画面ではカード風に */
+  }
+  .booking-table,
+  .booking-table tbody,
+  .booking-table tr,
+  .booking-table td {
+    display: block;
+    width: 100%;
+  }
+  .booking-table tr {
+    background: #fff;
+    margin-bottom: 0.9rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  .booking-table td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 0.8rem 1rem;
+  }
+  .booking-table td:last-child {
+    border-bottom: none;
+  }
+  /* 疑似ラベルを付ける（列名はヘッダ順に） */
+  .booking-table td:nth-child(1)::before { content: 'プラン名：'; font-weight: 700; color: #34495e; margin-right: .4rem; }
+  .booking-table td:nth-child(2)::before { content: '説明：';     font-weight: 700; color: #34495e; margin-right: .4rem; }
+  .booking-table td:nth-child(3)::before { content: '価格：';     font-weight: 700; color: #34495e; margin-right: .4rem; }
+  .booking-table td:nth-child(4)::before { content: '利用可能：'; font-weight: 700; color: #34495e; margin-right: .4rem; }
 }

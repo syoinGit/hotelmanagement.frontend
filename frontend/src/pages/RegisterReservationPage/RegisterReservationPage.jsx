@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import RegisterModal from "../../components/Modal/RegisterModal/RegisterModal";
-import "../SearchGuestPage/SearchGuestPage.css"; // ← 既存の検索フォーム用CSSを流用
+import "./RegisterReservationPage.css";
 
 const API_BASE =
   process.env.REACT_APP_API_BASE ||
@@ -109,10 +109,8 @@ const RegisterReservationPage = () => {
   };
 
   return (
-    <div className="search-guest-container">
-      {/* タイトル（中央寄せ & 余白は SearchGuestPage.css の .page-title 側で制御） */}
-      <h1 className="page-title">宿泊者検索（完全一致）→ 登録</h1>
-
+  <div className="register-reservation-page">
+    <h1 className="page-title">予約登録</h1>
       {/* ====== 検索フォーム：SearchGuestPage と同じ構造/クラス ====== */}
       <div className="form search-form">
         <div className="form-row">

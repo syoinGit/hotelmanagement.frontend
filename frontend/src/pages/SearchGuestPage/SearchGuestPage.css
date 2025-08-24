@@ -1,128 +1,111 @@
-.page-title {
-  text-align: center;       /* 中央寄せ */
-  margin-top: 30px;         /* 上の余白 */
-  margin-bottom: 20px;      /* 下の余白 */
-  font-size: 1.0rem;        /* タイトルの大きさ（必要に応じて） */
-  font-weight: bold;
+/* ===== 検索ページ専用 ===== */
+.search-guest-container {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* カード表示用のグリッドレイアウト */
-.card-grid {
+/* タイトル：検索ページは少しコンパクト */
+.search-guest-container .page-title {
+  text-align: center;
+  margin: 26px 0 16px;
+  font-size: 2rem;
+  font-weight: 760;
+  letter-spacing: .02em;
+  color: #2c3e50;
+}
+
+/* フォーム */
+.search-guest-container .search-form {
+  background: #fff;
+  padding: 1.4rem;
+  margin: 1.6rem auto 2rem;
+  max-width: 960px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  box-sizing: border-box;
+}
+
+.search-guest-container .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  justify-content: space-between;
+}
+
+.search-guest-container .form-row input,
+.search-guest-container .form-row select {
+  flex: 1 1 240px;
+  min-width: 200px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+  font-size: .95rem;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  box-sizing: border-box;
+}
+.search-guest-container .form-row input:focus,
+.search-guest-container .form-row select:focus {
+  border-color: #6aa7ff;
+  box-shadow: 0 0 0 3px rgba(106,167,255,.18);
+  background: #fff;
+  outline: none;
+}
+
+/* ボタン */
+.search-guest-container .form-actions { align-items: center; }
+
+.search-guest-container .search-button {
+  height: 42px;
+  padding: 0 18px;
+  font-size: .95rem;
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color .2s ease, transform .03s ease;
+}
+.search-guest-container .search-button:hover { background: #4f46e5; }
+.search-guest-container .search-button:active { transform: translateY(1px); }
+
+/* 結果カード（一覧でも詳細でも） */
+.search-guest-container .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 24px;
   padding: 2rem;
-  box-sizing: border-box;
   max-width: 1200px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
-
-/* 個別カードのスタイル */
-.reservation-card {
-  background-color: #fff;
+.search-guest-container .reservation-card {
+  background: #fff;
   border-radius: 12px;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-  font-family: 'Helvetica Neue', sans-serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  padding: 1.4rem;
 }
-
-/* 情報セクション */
-.guest-info,
-.reservation-info {
-  margin-bottom: 1rem;
-}
-
-.guest-info h3,
-.reservation-info summary {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.guest-info p,
-.reservation-info p {
-  margin: 4px 0;
-  font-size: 0.95rem;
-  color: #333;
-}
-
-/* ボタン共通 */
-.edit-button {
-  margin-top: 0.5rem;
+.search-guest-container .reservation-card .edit-button {
+  margin-top: .5rem;
   padding: 8px 12px;
   background-color: #6366f1;
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: .9rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color .2s ease;
 }
+.search-guest-container .reservation-card .edit-button:hover { background: #4f46e5; }
 
-.edit-button:hover {
-  background-color: #4f46e5;
-}
-
-/* モバイル対応 */
-@media (max-width: 600px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-
-  .reservation-card {
-    padding: 1rem;
-  }
-
-  .edit-button {
-    width: 100%;
-  }
-}
-
-.search-form {
-  background: #fff;
-  padding: 1.5rem;
-  margin: 2rem auto;
-  max-width: 960px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: space-between;
-}
-
-.form-row input {
-  flex: 1 1 200px;
-  min-width: 180px;
-}
-
-.form-row label {
-  font-size: 1rem;
-}
-
-.search-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #6366f1;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  align-self: flex-start;
-}
-
-.search-button:hover {
-  background-color: #4f46e5;
+/* モバイル */
+@media (max-width: 640px) {
+  .search-guest-container .search-form { padding: 1rem; }
+  .search-guest-container .form-row input { flex-basis: 100%; min-width: 100%; }
+  .search-guest-container .card-grid { grid-template-columns: 1fr; padding: 1rem; }
 }

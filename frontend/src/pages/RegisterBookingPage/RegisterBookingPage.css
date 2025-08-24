@@ -1,70 +1,104 @@
-.booking-form-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 24px;
-  background-color: #f9f9f9;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  font-family: 'Helvetica Neue', sans-serif;
+/* ===== プラン登録ページ専用 ===== */
+.register-booking-page {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
-.booking-form h2 {
+/* タイトル */
+.register-booking-page .page-title {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 26px 0 20px;
+  font-size: 2rem;
+  font-weight: 760;
+  letter-spacing: .02em;
+  color: #2c3e50;
 }
 
-.booking-form {
+/* フォーム */
+.register-booking-page .booking-form {
+  background: #fff;
+  padding: 1.6rem;
+  margin: 0 auto 2rem;
+  max-width: 720px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.2rem;
+  box-sizing: border-box;
 }
 
-.booking-form label {
-  font-weight: bold;
+.register-booking-page .booking-form label {
   display: flex;
   flex-direction: column;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: .95rem;
+  color: #374151;
 }
 
-.booking-form input,
-.booking-form textarea {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-top: 4px;
-  background-color: #fff;
+.register-booking-page .booking-form input,
+.register-booking-page .booking-form textarea {
+  margin-top: .4rem;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: .95rem;
+  background: #f9fafb;
+  transition: border-color .15s ease, box-shadow .15s ease;
 }
 
-.booking-form textarea {
+.register-booking-page .booking-form input:focus,
+.register-booking-page .booking-form textarea:focus {
+  border-color: #6aa7ff;
+  box-shadow: 0 0 0 3px rgba(106,167,255,.18);
+  outline: none;
+  background: #fff;
+}
+
+.register-booking-page .booking-form textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 90px;
 }
 
-.booking-form button {
-  background-color: #007acc;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.booking-form button:hover {
-  background-color: #005fa3;
-}
-
-.checkbox-label {
+/* チェックボックス */
+.register-booking-page .checkbox-label {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: .95rem;
 }
 
-.form-message {
-  margin-top: 16px;
-  font-weight: bold;
+/* ボタン */
+.register-booking-page .form-actions {
+  margin-top: 1rem;
+}
+
+.register-booking-page .primary {
+  height: 42px;
+  padding: 0 18px;
+  font-size: .95rem;
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color .2s ease, transform .03s ease;
+}
+.register-booking-page .primary:hover { background: #4f46e5; }
+.register-booking-page .primary:active { transform: translateY(1px); }
+
+/* メッセージ */
+.register-booking-page .form-message {
+  margin-top: 1rem;
+  font-weight: 600;
   text-align: center;
+  font-size: .95rem;
   color: #007a00;
+}
+
+/* モバイル対応 */
+@media (max-width: 640px) {
+  .register-booking-page .booking-form {
+    padding: 1.2rem;
+  }
 }

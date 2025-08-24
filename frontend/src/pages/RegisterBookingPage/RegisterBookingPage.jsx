@@ -7,7 +7,7 @@ const RegisterBookingPage = () => {
     name: '',
     description: '',
     price: '',
-    isAvailable: true
+    isAvailable: true, // ← UIは消したが値はtrueで送る
   });
 
   const [message, setMessage] = useState('');
@@ -25,32 +25,31 @@ const RegisterBookingPage = () => {
     try {
       const payload = {
         ...formData,
-        price: formData.price.toString(), // BigDecimal対応のため文字列で送信
+        // BigDecimal対応：stringで送信
+        price: formData.price.toString(),
       };
 
-      console.log("送信内容:", payload); // デバッグ用ログ
-
-      await axios.put('http://localhost:8080/registerBooking', payload); // Spring Bootのポートに合わせて
-
+      await axios.put('http://localhost:8080/registerBooking', payload);
       setMessage('✅ 宿泊プランの登録が完了しました！');
       setFormData({
         name: '',
         description: '',
         price: '',
-        isAvailable: true
+        isAvailable: true, // 送信後も既定はtrueのまま
       });
     } catch (error) {
-      console.error("登録エラー:", error);
+      console.error('登録エラー:', error);
       setMessage('❌ 登録に失敗しました。入力内容を確認してください。');
     }
   };
 
   return (
-    <div className="booking-form-container">
-      <h2>宿泊プラン登録</h2>
+    <div className="register-booking-page">
+      <h1 className="page-title">宿泊プラン登録</h1>
+
       <form className="booking-form" onSubmit={handleSubmit}>
         <label>
-          プラン名（必須）:
+          プラン名（必須）
           <input
             type="text"
             name="name"
@@ -59,16 +58,18 @@ const RegisterBookingPage = () => {
             required
           />
         </label>
+
         <label>
-          説明:
+          説明
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
           />
         </label>
+
         <label>
-          金額（必須）:
+          金額（必須）
           <input
             type="number"
             name="price"
@@ -77,17 +78,12 @@ const RegisterBookingPage = () => {
             required
           />
         </label>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            name="isAvailable"
-            checked={formData.isAvailable}
-            onChange={handleChange}
-          />
-          利用可能にする
-        </label>
-        <button type="submit">登録</button>
+        
+        <div className="form-actions">
+          <button type="submit" className="primary">登録</button>
+        </div>
       </form>
+
       {message && <p className="form-message">{message}</p>}
     </div>
   );
