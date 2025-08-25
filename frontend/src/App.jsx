@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import RequireAuth from "./routes/RequireAuth";
 import TopPage from './pages/TopPage/TopPage.jsx';
 import Home from './pages/Home/Home.jsx';
 import RegisterUserPage from './pages/RegisterUserPage/RegisterUserPage.jsx';
@@ -23,6 +24,7 @@ const AppLayout = () => {
   const hideHeader = hideHeaderPaths.includes(location.pathname);
   const hideHomeButton = hideHomeButtonPaths.includes(location.pathname);
 
+
   return (
     <>
       {/* ヘッダーは必要なページだけ表示 */}
@@ -30,17 +32,82 @@ const AppLayout = () => {
 
       <Routes>
         <Route path="/" element={<TopPage />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register-user" element={<RegisterUserPage />} />
-        <Route path="/guests" element={<GuestList />} />
-        <Route path="/bookings" element={<BookingListPage />} />
-        <Route path="/search" element={<SearchGuestPage />} />
-        <Route path="/match" element={<RegisterReservationPage />} />
-        <Route path="/register-booking" element={<RegisterBookingPage />} />
-        <Route path="/check-in" element={<CheckInPage />} />
-        <Route path="/check-out" element={<CheckOutPage />} />
+      {/* ここから保護ページ。RequireAuth で包む */}
+        <Route
+          path="/home"
+          element={
+            <RequireAuth>
+              <Home />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/guests"
+          element={
+            <RequireAuth>
+              <GuestList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/bookings"
+          element={
+            <RequireAuth>
+              <BookingListPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <RequireAuth>
+              <SearchGuestPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/match"
+          element={
+            <RequireAuth>
+              <RegisterReservationPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/register-booking"
+          element={
+            <RequireAuth>
+              <RegisterBookingPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/check-in"
+          element={
+            <RequireAuth>
+              <CheckInPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/check-out"
+          element={
+            <RequireAuth>
+              <CheckOutPage />
+            </RequireAuth>
+          }
+        />
+          <Route
+          path="/RegisterUserPage"
+          element={
+            <RequireAuth>
+              <RegisterUserPage />
+            </RequireAuth>
+          }
+        />
       </Routes>
+
 
       {/* Homeボタンも条件表示（ログイン/登録/トップでは非表示） */}
       {!hideHomeButton && <HomeButton />}

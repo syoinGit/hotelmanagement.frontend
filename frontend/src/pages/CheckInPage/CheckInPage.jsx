@@ -90,7 +90,6 @@ const CheckInPage = () => {
   return (
     <div className="check-in-container">
       <div className="ci-header">
-        <h2>本日チェックイン予定の宿泊者</h2>
         {message && <p className="message">{message}</p>}
       </div>
 

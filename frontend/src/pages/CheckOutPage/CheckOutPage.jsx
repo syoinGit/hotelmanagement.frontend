@@ -92,7 +92,6 @@ const CheckOutPage = () => {
   return (
     <div className="check-in-container">
       <div className="ci-header">
-        <h2>本日チェックアウト予定の宿泊者</h2>
         {message && <p className="message">{message}</p>}
       </div>
 
