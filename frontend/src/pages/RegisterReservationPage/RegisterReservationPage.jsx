@@ -67,15 +67,16 @@ const RegisterReservationPage = () => {
       const res = await axios.post(url, form, { withCredentials: true });
 
       // GuestRegistration から guest を取り出して保存
-      const guest = res?.data?.guest ?? null;
-      setMatchedGuest(guest);
-      setSearched(true);
+    const guest = res?.data?.guest ?? null;
+   if (guest && guest.id) {
+  setMatchedGuest(guest);
+  setInfo("一致する宿泊者が見つかりました。");
+} else {
+  setMatchedGuest(null);
+  setInfo("一致する宿泊者は見つかりませんでした。新規登録で続行できます。");
+}
+setSearched(true);
 
-      if (guest) {
-        setInfo("一致する宿泊者が見つかりました。");
-      } else {
-        setInfo("一致する宿泊者は見つかりませんでした。新規登録で続行できます。");
-      }
     } catch (e) {
       console.error("[match] failed", {
         url: `${API_BASE}/guest/match`,

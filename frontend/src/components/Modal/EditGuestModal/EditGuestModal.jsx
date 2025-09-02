@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
+// src/components/Modal/EditGuestModal/EditGuestModal.jsx
+import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import './EditGuestModal.css'; // スタイルは必要に応じて
+import API_BASE from '../../../utils/apiBase';
+import './EditGuestModal.css';
+
+axios.defaults.withCredentials = true;
 
 const EditGuestModal = ({ guestDetail, onClose }) => {
   const [formData, setFormData] = useState({
@@ -11,76 +15,173 @@ const EditGuestModal = ({ guestDetail, onClose }) => {
     age: '',
     region: '',
     email: '',
-    phone: ''
+    phone: '',
+    deleted: false,
   });
 
+  // ゲスト本体を安全に取り出し
+  const guest = useMemo(() => guestDetail?.guest ?? null, [guestDetail]);
+
   useEffect(() => {
-    console.log("guestDetail:", guestDetail);
-    if (guestDetail && guestDetail.guest) {
-      const g = guestDetail.guest;
-      setFormData({
-        id: g.id || '',
-        name: g.name || '',
-        kanaName: g.kanaName || '',
-        gender: g.gender || '',
-        age: g.age || '',
-        region: g.region || '',
-        email: g.email || '',
-        phone: g.phone || ''
-      });
-    }
-  }, [guestDetail]);
+    if (!guest) return;
+    setFormData({
+      id: guest.id ?? '',
+      name: guest.name ?? '',
+      kanaName: guest.kanaName ?? '',
+      gender: guest.gender ?? '',
+      age: guest.age ?? '',
+      region: guest.region ?? '',
+      email: guest.email ?? '',
+      phone: guest.phone ?? '',
+      deleted: !!guest.deleted, // boolean化
+    });
+  }, [guest]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async () => {
+  // ① ゲスト情報の更新（PUT /guest/update）
+  const handleSave = async () => {
     try {
-      await axios.put('http://localhost:8080/guest/update', formData, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+      await axios.put(`${API_BASE}/guest/update`, {
+        id: formData.id,
+        name: formData.name,
+        kanaName: formData.kanaName,
+        gender: formData.gender,
+        age: Number(formData.age) || 0,
+        region: formData.region,
+        email: formData.email,
+        phone: formData.phone,
       });
-      alert("更新しました");
-      onClose();
+      alert('更新しました');
+      onClose?.();
     } catch (error) {
       console.error('❌ 更新エラー:', error);
-      alert("更新に失敗しました");
+      alert('更新に失敗しました');
     }
   };
 
+  // ② 削除/復元（PUT /guest/delete?id=&name=&deleted=）
+  //    - deleted=true で「削除」
+  //    - deleted=false で「復元」
+  // サーバは ResponseEntity<String> で本文を返す想定 → res.data が文字列
+  const handleToggleDelete = async (nextDeleted) => {
+    try {
+      const res = await axios.put(`${API_BASE}/guest/delete`, null, {
+        params: {
+          id: formData.id,
+          name: formData.name,     // ★ name も送る 
+        },
+      });
+      alert(res?.data ?? '更新しました'); // ← 返却メッセージをそのまま表示
+      onClose?.();
+    } catch (error) {
+      console.error('❌ 削除/復元エラー:', error);
+      alert('削除/復元に失敗しました');
+    }
+  };
+
+  if (!guestDetail) return null;
+
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" role="dialog" aria-modal="true">
       <div className="modal-content">
-        <h3>ゲスト情報を編集</h3>
+        <h3 className="modal-title">ゲスト情報を編集</h3>
 
-        <label>名前</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} />
+        <div className="form-grid">
+          <label className="form-label">名前</label>
+          <input
+            className="form-input"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+          />
 
-        <label>カナ</label>
-        <input type="text" name="kanaName" value={formData.kanaName} onChange={handleChange} />
+          <label className="form-label">カナ</label>
+          <input
+            className="form-input"
+            type="text"
+            name="kanaName"
+            value={formData.kanaName}
+            onChange={handleChange}
+          />
 
-        <label>性別</label>
-        <input type="text" name="gender" value={formData.gender} onChange={handleChange} />
+          <label className="form-label">性別</label>
+          <input
+            className="form-input"
+            type="text"
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+          />
 
-        <label>年齢</label>
-        <input type="number" name="age" value={formData.age} onChange={handleChange} />
+          <label className="form-label">年齢</label>
+          <input
+            className="form-input"
+            type="number"
+            name="age"
+            value={formData.age}
+            onChange={handleChange}
+          />
 
-        <label>地域</label>
-        <input type="text" name="region" value={formData.region} onChange={handleChange} />
+          <label className="form-label">地域</label>
+          <input
+            className="form-input"
+            type="text"
+            name="region"
+            value={formData.region}
+            onChange={handleChange}
+          />
 
-        <label>メール</label>
-        <input type="email" name="email" value={formData.email} onChange={handleChange} />
+          <label className="form-label">メール</label>
+          <input
+            className="form-input"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-        <label>電話番号</label>
-        <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
+          <label className="form-label">電話番号</label>
+          <input
+            className="form-input"
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+        </div>
 
         <div className="modal-buttons">
-          <button onClick={handleSubmit}>保存</button>
-          <button onClick={onClose}>キャンセル</button>
+          <button className="btn primary" onClick={handleSave}>
+            保存
+          </button>
+
+          {/* トグル動作：現在が削除済みなら「復元」、未削除なら「削除」 */}
+          {formData.deleted ? (
+            <button
+              className="btn ghost"
+              onClick={() => handleToggleDelete(false)}
+              title="削除を戻す"
+            >
+              削除を戻す
+            </button>
+          ) : (
+            <button
+              className="btn danger"
+              onClick={() => handleToggleDelete(true)}
+              title="削除する"
+            >
+              削除する
+            </button>
+          )}
+
+          <button className="btn" onClick={onClose}>
+            キャンセル
+          </button>
         </div>
       </div>
     </div>

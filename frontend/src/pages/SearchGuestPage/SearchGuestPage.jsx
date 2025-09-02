@@ -30,7 +30,11 @@ const SearchGuestPage = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showCheckedOut, setShowCheckedOut] = useState(false);
+
+  // デフォルトで「チェックアウト済みも表示」
+  const [showCheckedOut, setShowCheckedOut] = useState(true);
+  // 削除済みを表示（必要に応じてAPIでフィルタに使うなら formData に含める実装へ）
+  const [showDeleted, setShowDeleted] = useState(false);
 
   // モーダル
   const [selectedGuestDetail, setSelectedGuestDetail] = useState(null);
@@ -53,7 +57,11 @@ const SearchGuestPage = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(`${API_BASE}/guest/search`, formData);
+      const res = await axios.post(`${API_BASE}/guest/search`, {
+        ...formData,
+        showDeleted,      // ← バックエンドで使うなら受け取れるように
+        showCheckedOut    // ← 同上
+      });
       setResults(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('検索失敗:', err);
@@ -69,14 +77,28 @@ const SearchGuestPage = () => {
     handleSearch();
   };
 
+  const handleClear = () => {
+    setFormData({
+      id: '',
+      name: '',
+      kanaName: '',
+      phone: '',
+      checkInDate: '',
+      checkOutDate: ''
+    });
+    setResults([]);
+    setError('');
+  };
+
   return (
-    <div className="search-page">  {/* ★ スコープ用のルートクラス */}
+    <div className="search-page">
       <div className="search-guest-container">
         <h1 className="page-title">宿泊者検索</h1>
 
-        {/* 検索フォーム */}
+        {/* ====== 検索フォーム（グリッドレイアウト） ====== */}
         <form className="form search-form" onSubmit={onSubmit}>
-          <div className="form-row">
+          {/* 1行目：名前／フリガナ */}
+          <div className="form-grid form-grid--row1">
             <input
               type="text"
               name="name"
@@ -95,7 +117,8 @@ const SearchGuestPage = () => {
             />
           </div>
 
-          <div className="form-row">
+          {/* 2行目：電話番号／チェックイン／チェックアウト */}
+          <div className="form-grid form-grid--row2">
             <input
               type="text"
               name="phone"
@@ -105,21 +128,14 @@ const SearchGuestPage = () => {
               aria-label="電話番号"
               inputMode="tel"
             />
-          </div>
-
-          <div className="form-row">
-            <label htmlFor="checkInDate">チェックイン</label>
             <input
-              id="checkInDate"
               type="date"
               name="checkInDate"
               value={formData.checkInDate}
               onChange={handleChange}
               aria-label="チェックイン日"
             />
-            <label htmlFor="checkOutDate">チェックアウト</label>
             <input
-              id="checkOutDate"
               type="date"
               name="checkOutDate"
               value={formData.checkOutDate}
@@ -128,7 +144,8 @@ const SearchGuestPage = () => {
             />
           </div>
 
-          <div className="form-row form-actions">
+          {/* ボタン行 */}
+          <div className="form-actions">
             <button
               type="submit"
               className="search-button"
@@ -140,10 +157,26 @@ const SearchGuestPage = () => {
 
             <button
               type="button"
-              className="toggle-button"
+              className="ghost-button"
               onClick={() => setShowCheckedOut(v => !v)}
             >
               {showCheckedOut ? 'チェックアウト済みを非表示' : 'チェックアウト済みも表示'}
+            </button>
+
+            <button
+              type="button"
+              className="ghost-button"
+              onClick={() => setShowDeleted(v => !v)}
+            >
+              {showDeleted ? '削除済みを非表示' : '削除済みも表示'}
+            </button>
+
+            <button
+              type="button"
+              className="ghost-button"
+              onClick={handleClear}
+            >
+              入力内容をクリア
             </button>
           </div>
         </form>
@@ -151,12 +184,16 @@ const SearchGuestPage = () => {
         {/* メッセージ */}
         {error && <p className="error">{error}</p>}
 
-        {/* 結果 */}
+        {/* ====== 結果 ====== */}
         <div className="results-container">
           <div className="card-grid">
             {results.map((guestDetail, index) => {
               const { guest, reservations = [], bookings = [] } = guestDetail || {};
-              // チェックアウト済フラグでフィルタ
+
+              // 削除済みフィルタ（バックエンドで除外できるなら不要）
+              if (!showDeleted && guest?.deleted) return null;
+
+              // チェックアウト済みフィルタ
               const visibleReservations = reservations.filter(
                 r => showCheckedOut || r.status !== 'CHECKED_OUT'
               );
@@ -194,10 +231,16 @@ const SearchGuestPage = () => {
                       const booking =
                         bookings.find(b => b.id === reservation.bookingId) || null;
 
-                      const rowKey = reservation.id || `${guestKey}-resv-${reservation.bookingId}-${reservation.checkInDate}`;
+                      const rowKey =
+                        reservation.id ||
+                        `${guestKey}-resv-${reservation.bookingId}-${reservation.checkInDate}`;
 
                       return (
-                        <div key={rowKey} className="reservation-row" style={{ padding: '8px 0', borderBottom: '1px dashed #e5e7eb' }}>
+                        <div
+                          key={rowKey}
+                          className="reservation-row"
+                          style={{ padding: '8px 0', borderBottom: '1px dashed #e5e7eb' }}
+                        >
                           <p><strong><FaCalendarAlt /> チェックイン日:</strong> {reservation.checkInDate}</p>
                           <p><strong><FaCalendarAlt /> チェックアウト日:</strong> {reservation.checkOutDate}</p>
                           <p><strong>宿泊日数:</strong> {reservation.stayDays} 泊</p>
@@ -224,7 +267,7 @@ const SearchGuestPage = () => {
           </div>
         </div>
 
-        {/* モーダルたち */}
+        {/* ====== モーダル ====== */}
         {guestModalOpen && selectedGuestDetail && (
           <EditGuestModal
             guestDetail={selectedGuestDetail}
