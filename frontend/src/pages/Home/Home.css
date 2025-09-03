@@ -3,13 +3,13 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
-  background: #0f1218; /* ダーク基調（YouTube Studio 風） */
-  color: #e5e7eb;
+  background: #f9fafb; /* 明るい背景 */
+  color: #1f2937;      /* ダークグレー文字 */
 }
 
 .dash-sidebar {
-  background: #111827;
-  border-right: 1px solid #1f2937;
+  background: #ffffff;              /* 白背景 */
+  border-right: 1px solid #e5e7eb;  /* 薄いグレーの区切り線 */
   padding: 16px 12px;
 }
 
@@ -19,7 +19,7 @@
   gap: 8px;
   font-weight: 700;
   margin: 8px 8px 16px;
-  color: #c7d2fe;
+  color: #2563eb; /* 明るいブルー */
 }
 
 .dash-nav {
@@ -35,20 +35,21 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: 8px;
-  color: #e5e7eb;
+  color: #374151;            /* グレー文字 */
   text-decoration: none;
   transition: background .15s ease, color .15s ease;
 }
 .nav-item:hover {
-  background: #1f2937;
-  color: #ffffff;
+  background: #e0f2fe;       /* ホバー時は薄い水色 */
+  color: #1d4ed8;            /* ブルー文字 */
 }
 .nav-item.active {
-  background: #374151;
-  color: #ffffff;
+  background: #bfdbfe;       /* 選択中は濃いめの水色 */
+  color: #1e3a8a;            /* 濃いブルー */
+  font-weight: 600;
 }
 
 .dash-main {
   padding: 20px 24px 40px;
-  background: radial-gradient(1200px 600px at 30% 10%, #1f2937 0%, #0f1218 60%);
+  background: #f9fafb;       /* 全体的にライト基調に */
 }
