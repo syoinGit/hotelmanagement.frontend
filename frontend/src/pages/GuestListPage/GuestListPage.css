@@ -1,145 +1,210 @@
-/* ページ全体 */
+/* src/pages/GuestListPage/GuestListPage.css */
+/* ---- ベース ---- */
 .guest-list-page {
-  padding: 20px 24px 40px;
-  background: #f7f8fb;
-  min-height: 100vh;
-  box-sizing: border-box;
-  color: #1f2937;
-}
-
-/* 見出し */
-.gl-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: .02em;
-  margin: 4px 0 2px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
   color: #111827;
 }
-.gl-sub {
+
+.gl-header .gl-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  margin: 4px 0 4px;
+  color: #111827;
+}
+.gl-header .gl-sub {
   color: #6b7280;
-  margin: 0 0 18px;
+  margin-bottom: 16px;
 }
 
-/* ツールバー */
+/* ---- ツールバー：検索 + ステータス ---- */
 .gl-toolbar {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.04);
+  margin-bottom: 16px;
+}
+
+.gl-form-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.gl-form-grid input[type="text"],
+.gl-form-grid input[type="date"] {
+  height: 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: #f9fafb;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.gl-form-grid input:focus {
+  background: #fff;
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(147,197,253,.25);
+  outline: none;
+}
+
+.gl-actions-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.gl-status-filter select {
+  height: 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #fff;
+}
+.gl-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  transition: transform .02s ease, background .2s ease, border-color .2s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #fff;
+}
+.btn.primary:hover { background: #4f46e5; }
+.btn.ghost:hover { background: #f3f4f6; }
+.btn.outline {
+  background: #fff;
+  border-color: #c7d2fe;
+  color: #4f46e5;
+}
+.btn.outline:hover { background: #eef2ff; }
+
+.gl-count {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: .95rem;
+}
+
+/* ---- リスト & カード ---- */
+.gl-list {
+  display: grid;
+  gap: 12px;
+}
+
+.gl-card {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 16px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
-}
-.gl-filter label {
-  margin-right: 8px;
-  color: #4b5563;
-  font-size: .95rem;
-}
-.gl-filter select {
-  height: 38px;
-  padding: 0 10px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #f9fafb;
-  font-size: .95rem;
-}
-.gl-count {
-  color: #6b7280;
-  font-size: .92rem;
-}
-
-/* 状態表示 */
-.gl-state,
-.gl-error,
-.gl-empty {
-  padding: 16px;
-  margin: 16px 0;
-  border-radius: 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-}
-.gl-error { border-color: #fecaca; background: #fff1f2; color: #991b1b; }
-.gl-empty { color: #6b7280; }
-
-/* 一覧 */
-.gl-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* ダッシュボードに寄せたカード */
-.gl-card {
-  display: grid;
-  grid-template-columns: 48px 1fr auto;
-  align-items: center;
-  gap: 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
   padding: 14px 16px;
-  box-shadow: 0 2px 8px rgba(16,24,40,.04);
+  box-shadow: 0 6px 16px rgba(0,0,0,.04);
 }
+
 .gl-avatar {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e0e7ff, #dbeafe);
-  color: #1d4ed8;
+  background: #eef2ff;
+  color: #4338ca;
   display: grid;
   place-items: center;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 18px;
 }
-.gl-main { display: flex; flex-direction: column; gap: 4px; }
+
 .gl-name {
+  font-size: 16px;
   font-weight: 700;
-  color: #111827;
+  margin-bottom: 2px;
 }
-.gl-subrow { color: #6b7280; display: flex; align-items: center; gap: 6px; }
-.gl-pill {
-  background: #eef2ff;
-  border: 1px solid #e5e7eb;
-  color: #3730a3;
-  font-size: .82rem;
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-.gl-sep { opacity: .6; }
-.gl-phone { font-variant-numeric: tabular-nums; }
 
-/* 右側エリア（将来のアクション置き場） */
-.gl-right { display: flex; align-items: center; gap: 8px; }
-
-/* ページャー */
-.gl-pager {
-  margin-top: 16px;
+.gl-subrow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #6b7280;
+}
+.gl-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #4338ca;
+  font-size: 12px;
+}
+.gl-sep { opacity: .6; }
+.gl-phone { letter-spacing: .02em; }
+
+.gl-right { display: flex; align-items: center; gap: 8px; }
+
+/* ---- 予約の details ---- */
+.gl-details {
+  margin-top: 8px;
+}
+.gl-details > summary {
+  cursor: pointer;
+  color: #4b5563;
+  padding: 6px 0;
+  list-style: none;
+}
+.gl-details > summary::-webkit-details-marker { display: none; }
+
+.gl-reservations {
+  margin-top: 8px;
+  border-top: 1px dashed #e5e7eb;
+}
+.gl-res-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.gl-res-title { font-weight: 600; color: #111827; }
+.gl-res-sub { color: #6b7280; font-size: .95rem; }
+.gl-res-empty { color: #9ca3af; padding: 10px 0; }
+
+/* ---- ページャ ---- */
+.gl-pager {
+  display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
 }
 .gl-pagebtn {
   height: 36px;
   padding: 0 14px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #e5e7eb;
   background: #fff;
   cursor: pointer;
-  transition: background .15s ease, border-color .15s ease;
 }
-.gl-pagebtn:hover { background: #f9fafb; }
-.gl-pagebtn:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-}
+.gl-pagebtn:disabled { opacity: .5; cursor: not-allowed; }
 .gl-pageinfo { color: #6b7280; }
 
-/* モバイル */
-@media (max-width: 640px) {
-  .gl-toolbar { flex-direction: column; align-items: stretch; gap: 8px; }
-  .gl-card { grid-template-columns: 40px 1fr; }
-  .gl-right { justify-self: end; }
+/* ---- 状態 ---- */
+.gl-state, .gl-error, .gl-empty {
+  padding: 18px 0;
+  color: #6b7280;
 }
+.gl-error { color: #dc2626; }
