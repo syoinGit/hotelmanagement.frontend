@@ -1,7 +1,6 @@
-// src/pages/Home/DashboardLanding.jsx
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { FaUser, FaBed, FaCalendarAlt, FaHotel } from 'react-icons/fa';
+import { FaUser, FaBed, FaCalendarAlt } from 'react-icons/fa'; // ← FaHotel を削除
 import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
 import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
 import './DashboardLanding.css';
@@ -13,6 +12,8 @@ const API_BASE =
 
 const DashboardLanding = () => {
   const [stayGuests, setStayGuests] = useState([]);
+  const [checkInTodayList, setCheckInTodayList] = useState([]);
+  const [checkOutTodayList, setCheckOutTodayList] = useState([]);
 
   // モーダル制御
   const [guestModalOpen, setGuestModalOpen] = useState(false);
@@ -20,44 +21,46 @@ const DashboardLanding = () => {
   const [selectedGuestDetail, setSelectedGuestDetail] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
+  // API呼び出し
   const fetchStayGuests = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/guests/stay`, { withCredentials: true });
-      setStayGuests(res.data ?? []);
-    } catch (err) {
-      console.error('❌ 宿泊中ゲストの取得に失敗:', err);
-    }
+    const res = await axios.get(`${API_BASE}/guests/stay`, { withCredentials: true });
+    return res.data ?? [];
+  };
+  const fetchCheckInToday = async () => {
+    const res = await axios.get(`${API_BASE}/guests/check-in-today`, { withCredentials: true });
+    return res.data ?? [];
+  };
+  const fetchCheckOutToday = async () => {
+    const res = await axios.get(`${API_BASE}/guests/check-out-today`, { withCredentials: true });
+    return res.data ?? [];
   };
 
-  useEffect(() => {
-    fetchStayGuests();
+  // 初回ロード
+  const loadAll = useCallback(async () => {
+    try {
+      const [stay, ins, outs] = await Promise.all([
+        fetchStayGuests(),
+        fetchCheckInToday(),
+        fetchCheckOutToday(),
+      ]);
+      setStayGuests(stay);
+      setCheckInTodayList(ins);
+      setCheckOutTodayList(outs);
+    } catch (err) {
+      console.error('❌ ダッシュボードデータ取得に失敗:', err);
+    }
   }, []);
 
-  // KPI の計算
-  const { totalGuests, checkInsToday, checkOutsToday } = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    let guestCount = 0;
-    let ins = 0;
-    let outs = 0;
-
-    stayGuests.forEach((gd) => {
-      if (!gd) return;
-      guestCount += 1;
-      (gd.reservations ?? []).forEach((r) => {
-        if (!r) return;
-        if (r.checkInDate === today) ins += 1;
-        if (r.checkOutDate === today) outs += 1;
-      });
-    });
-
-    return { totalGuests: guestCount, checkInsToday: ins, checkOutsToday: outs };
-  }, [stayGuests]);
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
 
   return (
     <div className="dashboard-landing">
       {/* 見出し */}
       <header className="dash-header">
-        <h1 className="dash-title"><FaHotel /> ダッシュボード</h1>
+        {/* FaHotel アイコンを削除し、宿泊者ページと同じ見出しフォントに */}
+        <h1 className="dash-title">ダッシュボード</h1>
         <p className="sub-text">本日の宿泊状況と最新のステータスを確認・編集できます。</p>
       </header>
 
@@ -66,7 +69,7 @@ const DashboardLanding = () => {
         <div className="kpi-card">
           <div className="kpi-icon kpi-icon--blue"><FaUser /></div>
           <div className="kpi-meta">
-            <div className="kpi-value">{totalGuests}</div>
+            <div className="kpi-value">{stayGuests.length}</div>
             <div className="kpi-label">現在の宿泊者</div>
           </div>
         </div>
@@ -74,16 +77,16 @@ const DashboardLanding = () => {
         <div className="kpi-card">
           <div className="kpi-icon kpi-icon--indigo"><FaCalendarAlt /></div>
           <div className="kpi-meta">
-            <div className="kpi-value">{checkInsToday}</div>
-            <div className="kpi-label">今日のチェックイン</div>
+            <div className="kpi-value">{checkInTodayList.length}</div>
+            <div className="kpi-label">今日のチェックイン予定</div>
           </div>
         </div>
 
         <div className="kpi-card">
           <div className="kpi-icon kpi-icon--purple"><FaBed /></div>
           <div className="kpi-meta">
-            <div className="kpi-value">{checkOutsToday}</div>
-            <div className="kpi-label">今日のチェックアウト</div>
+            <div className="kpi-value">{checkOutTodayList.length}</div>
+            <div className="kpi-label">今日のチェックアウト予定</div>
           </div>
         </div>
       </section>
@@ -148,25 +151,24 @@ const DashboardLanding = () => {
         </div>
       </section>
 
-      {/* モーダル（保存/閉じる後に再取得して反映） */}
+      {/* モーダル */}
       {guestModalOpen && selectedGuestDetail && (
         <EditGuestModal
           guestDetail={selectedGuestDetail}
           onClose={() => {
             setGuestModalOpen(false);
             setSelectedGuestDetail(null);
-            fetchStayGuests();
+            loadAll(); // 再取得
           }}
         />
       )}
-
       {reservationModalOpen && selectedReservation && (
         <EditReservationModal
           reservation={selectedReservation}
           onClose={() => {
             setReservationModalOpen(false);
             setSelectedReservation(null);
-            fetchStayGuests();
+            loadAll(); // 再取得
           }}
         />
       )}

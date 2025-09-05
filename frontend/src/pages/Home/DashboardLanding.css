@@ -149,3 +149,17 @@
   border: 1px dashed #e5e7eb;
   border-radius: 10px;
 }
+
+/* 見出し */
+.dash-header .dash-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #111827;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; /* 宿泊者ページと同じ */
+}
+.dash-header .sub-text {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}

@@ -1,9 +1,9 @@
-/* ===== 検索ページ専用 ===== */
+/* src/pages/SearchGuestPage/SearchGuestPage.css */
+
+/* ===== コンテナ ===== */
 .search-guest-container {
   font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
-
-/* タイトル：余白控えめ */
 .search-guest-container .page-title {
   text-align: center;
   margin: 16px 0 8px;
@@ -13,12 +13,12 @@
   color: #2c3e50;
 }
 
-/* フォームボックス */
+/* ===== フォームカード ===== */
 .search-guest-container .search-form {
   background: #fff;
   padding: 1rem 1.1rem;
   margin: 1rem auto 1.2rem;
-  max-width: 960px;
+  max-width: 1040px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,.06);
   display: flex;
@@ -27,22 +27,20 @@
   box-sizing: border-box;
 }
 
-/* ===== 行レイアウト（CSS Grid） ===== */
-/* 1行目：2カラム（名前／フリガナ） */
+/* 1行目：名前／フリガナ */
 .search-guest-container .form-grid.form-grid--row1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.8rem;
 }
-
-/* 2行目：3カラム（電話／IN／OUT） */
+/* 2行目：電話／IN／OUT */
 .search-guest-container .form-grid.form-grid--row2 {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr; /* 電話を少し広めに */
+  grid-template-columns: 1.2fr 1fr 1fr;
   gap: 0.8rem;
 }
 
-/* 入力共通 */
+/* 入力 */
 .search-guest-container .form-grid input,
 .search-guest-container .form-grid select {
   height: 42px;
@@ -64,12 +62,21 @@
   outline: none;
 }
 
-/* ===== ボタン行 ===== */
+/* ===== ボタン行：横並び固定 ===== */
 .search-guest-container .form-actions {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: nowrap;            /* ← 改行させない */
+  overflow-x: auto;             /* 狭い時は横スクロール */
+  padding-bottom: 2px;
+}
+.search-guest-container .form-actions::-webkit-scrollbar {
+  height: 6px;
+}
+.search-guest-container .form-actions::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px;
 }
 
 /* プライマリ（検索） */
@@ -84,9 +91,9 @@
   cursor: pointer;
   transition: background-color .2s ease, box-shadow .15s ease;
   outline: none;
+  white-space: nowrap;          /* ← ボタン内を折返さない */
 }
 .search-guest-container .search-button:hover { background: #4f46e5; }
-.search-guest-container .search-button:active { transform: none; }
 
 /* ゴースト（トグル/クリア） */
 .search-guest-container .ghost-button {
@@ -100,61 +107,167 @@
   cursor: pointer;
   transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
   outline: none;
+  white-space: nowrap;          /* ← ボタン内を折返さない */
 }
 .search-guest-container .ghost-button:hover {
   background: #f3f4f6;
   border-color: #c7ccd5;
 }
-.search-guest-container .ghost-button:active { transform: none; }
+.search-guest-container .ghost-button.is-on {
+  border-color: #6366f1;
+  color: #3730a3;
+  background: #eef2ff;
+}
 
-/* ===== 結果カード：余白やや圧縮 ===== */
+/* ===== 結果カード（画像②風） ===== */
 .search-guest-container .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 20px;
   padding: 1.1rem;
-  max-width: 1100px;
+  max-width: 1140px;
   margin: 0 auto 1rem;
   box-sizing: border-box;
 }
-.search-guest-container .reservation-card {
+
+.sg-card {
   background: #fff;
   border-radius: 12px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  border: 1px solid #e7e9ef;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
   padding: 1.1rem;
 }
-.search-guest-container .reservation-card .edit-button {
-  margin-top: .45rem;
-  padding: 8px 12px;
-  background-color: #6366f1;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: .9rem;
-  cursor: pointer;
-  transition: background-color .2s ease;
+.sg-card.is-deleted {
+  opacity: .75;
+  border-color: #f2c6c6;
+  background: #fffafa;
 }
-.search-guest-container .reservation-card .edit-button:hover { background: #4f46e5; }
+.badge-deleted {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: .5rem;
+  padding: 2px 8px;
+  font-size: .78rem;
+  border-radius: 999px;
+  color: #7f1d1d;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+}
 
-/* ===== メッセージ（任意） ===== */
+/* ヘッダー */
+.sg-card__header {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: .75rem;
+  border-bottom: 1px dashed #e9edf2;
+}
+.sg-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #425466;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+}
+.sg-head .sg-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+}
+.sg-ico { margin-right: 6px; }
+.sg-sub { color: #4b5563; margin-top: 2px; }
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
+  font-size: .82rem;
+}
+.sep { margin: 0 .5rem; color: #9aa4b2; }
+.tel { white-space: nowrap; }
+
+.sg-actions .btn {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn.ghost {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+.btn.ghost:hover { background: #f3f4f6; }
+.btn.outline {
+  background: #fff;
+  border: 1px solid #6366f1;
+  color: #3730a3;
+}
+.btn.outline:hover { background: #eef2ff; }
+
+/* 予約 details */
+.sg-details {
+  margin-top: .6rem;
+}
+.sg-details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #334155;
+  list-style: none;
+}
+.sg-details > summary::-webkit-details-marker { display: none; }
+.sg-details > summary::after {
+  content: '▼';
+  font-size: .7rem;
+  margin-left: .4rem;
+  color: #94a3b8;
+}
+.sg-res-list { margin-top: .6rem; }
+.sg-res-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: .6rem 0;
+  border-bottom: 1px dashed #eaeef3;
+}
+.sg-res-row:last-child { border-bottom: none; }
+.sg-res-title { font-weight: 600; }
+.sg-res-sub {
+  color: #4b5563;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+/* メッセージ */
 .search-guest-container .error {
   color: #c0392b;
   text-align: center;
   margin: .5rem 0 0;
 }
 
-/* ===== モバイル ===== */
+/* ===== レスポンシブ ===== */
 @media (max-width: 860px) {
   .search-guest-container .form-grid.form-grid--row2 {
-    grid-template-columns: 1fr 1fr;   /* 電話とINを並べ、OUTは次の行に落ちる */
+    grid-template-columns: 1fr 1fr;
   }
 }
 @media (max-width: 640px) {
   .search-guest-container .search-form { padding: .9rem; }
   .search-guest-container .form-grid.form-grid--row1,
   .search-guest-container .form-grid.form-grid--row2 {
-    grid-template-columns: 1fr;       /* すべて縦並び */
+    grid-template-columns: 1fr;
   }
   .search-guest-container .card-grid { grid-template-columns: 1fr; padding: 1rem; }
+  .search-guest-container .form-actions { flex-wrap: wrap; } /* 極狭のみ折返し許可 */
 }

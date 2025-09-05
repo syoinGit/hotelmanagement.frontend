@@ -1,13 +1,13 @@
+// src/pages/SearchGuestPage/SearchGuestPage.jsx
 import React, { useMemo, useState } from 'react';
 import axios from 'axios';
 import {
-  FaSearch, FaUser, FaBed, FaPhone, FaCalendarAlt, FaClipboardList, FaEdit
+  FaSearch, FaUser, FaBed, FaPhone, FaCalendarAlt, FaClipboardList, FaEdit, FaTrash,
 } from 'react-icons/fa';
 import './SearchGuestPage.css';
 import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
 import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
 
-// すべての axios リクエストで Cookie を送る
 axios.defaults.withCredentials = true;
 
 const API_BASE =
@@ -23,7 +23,7 @@ const SearchGuestPage = () => {
     kanaName: '',
     phone: '',
     checkInDate: '',
-    checkOutDate: ''
+    checkOutDate: '',
   });
 
   // 結果・状態
@@ -31,9 +31,8 @@ const SearchGuestPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // デフォルトで「チェックアウト済みも表示」
+  // 表示トグル
   const [showCheckedOut, setShowCheckedOut] = useState(true);
-  // 削除済みを表示（必要に応じてAPIでフィルタに使うなら formData に含める実装へ）
   const [showDeleted, setShowDeleted] = useState(false);
 
   // モーダル
@@ -44,9 +43,10 @@ const SearchGuestPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // いずれか埋まっていれば検索可能
   const canSearch = useMemo(() => {
     const { id, name, kanaName, phone, checkInDate, checkOutDate } = formData;
     return !!(id || name || kanaName || phone || checkInDate || checkOutDate);
@@ -59,8 +59,8 @@ const SearchGuestPage = () => {
     try {
       const res = await axios.post(`${API_BASE}/guest/search`, {
         ...formData,
-        showDeleted,      // ← バックエンドで使うなら受け取れるように
-        showCheckedOut    // ← 同上
+        showDeleted,
+        showCheckedOut,
       });
       setResults(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
@@ -84,7 +84,7 @@ const SearchGuestPage = () => {
       kanaName: '',
       phone: '',
       checkInDate: '',
-      checkOutDate: ''
+      checkOutDate: '',
     });
     setResults([]);
     setError('');
@@ -95,7 +95,7 @@ const SearchGuestPage = () => {
       <div className="search-guest-container">
         <h1 className="page-title">宿泊者検索</h1>
 
-        {/* ====== 検索フォーム（グリッドレイアウト） ====== */}
+        {/* ===== 検索フォーム ===== */}
         <form className="form search-form" onSubmit={onSubmit}>
           {/* 1行目：名前／フリガナ */}
           <div className="form-grid form-grid--row1">
@@ -144,12 +144,13 @@ const SearchGuestPage = () => {
             />
           </div>
 
-          {/* ボタン行 */}
+          {/* ボタン行（横並び固定 / 狭幅のみ折返し） */}
           <div className="form-actions">
             <button
               type="submit"
               className="search-button"
               disabled={!canSearch || loading}
+              title="検索する"
             >
               <FaSearch style={{ marginRight: 6 }} />
               {loading ? '検索中…' : '検索する'}
@@ -157,24 +158,27 @@ const SearchGuestPage = () => {
 
             <button
               type="button"
-              className="ghost-button"
-              onClick={() => setShowCheckedOut(v => !v)}
+              className={`ghost-button ${showCheckedOut ? 'is-on' : ''}`}
+              onClick={() => setShowCheckedOut((v) => !v)}
+              title="チェックアウト済みの予約も含める"
             >
-              {showCheckedOut ? 'チェックアウト済みを非表示' : 'チェックアウト済みも表示'}
+              {showCheckedOut ? 'チェックアウト済みも表示' : 'チェックアウト済みを非表示'}
             </button>
 
             <button
               type="button"
-              className="ghost-button"
-              onClick={() => setShowDeleted(v => !v)}
+              className={`ghost-button ${showDeleted ? 'is-on' : ''}`}
+              onClick={() => setShowDeleted((v) => !v)}
+              title="削除（論理削除）済みも含める"
             >
-              {showDeleted ? '削除済みを非表示' : '削除済みも表示'}
+              {showDeleted ? '削除済みも表示中' : '削除済みも表示'}
             </button>
 
             <button
               type="button"
               className="ghost-button"
               onClick={handleClear}
+              title="入力をクリア"
             >
               入力内容をクリア
             </button>
@@ -184,90 +188,140 @@ const SearchGuestPage = () => {
         {/* メッセージ */}
         {error && <p className="error">{error}</p>}
 
-        {/* ====== 結果 ====== */}
+        {/* ===== 結果（カード2カラム / 画像②レイアウト） ===== */}
         <div className="results-container">
           <div className="card-grid">
-            {results.map((guestDetail, index) => {
-              const { guest, reservations = [], bookings = [] } = guestDetail || {};
+            {results.map((detail, i) => {
+              const { guest, reservations = [], bookings = [] } = detail || {};
+              if (!guest) return null;
 
-              // 削除済みフィルタ（バックエンドで除外できるなら不要）
-              if (!showDeleted && guest?.deleted) return null;
+              // 削除済みの非表示
+              if (!showDeleted && guest.deleted) return null;
 
-              // チェックアウト済みフィルタ
+              // 表示対象の予約（チェックアウト済みを除外可）
               const visibleReservations = reservations.filter(
-                r => showCheckedOut || r.status !== 'CHECKED_OUT'
+                (r) => showCheckedOut || r.status !== 'CHECKED_OUT'
               );
-              if (!guest || visibleReservations.length === 0) return null;
-
-              const guestKey = guest.id || `guest-${index}`;
 
               return (
-                <div key={guestKey} className="reservation-card">
-                  {/* 宿泊者情報 */}
-                  <div className="guest-info" style={{ marginBottom: 10 }}>
-                    <h3><FaUser /> 宿泊者情報</h3>
-                    <p><strong>名前:</strong> {guest.name}</p>
-                    <p><strong>フリガナ:</strong> {guest.kanaName}</p>
-                    <p><strong><FaPhone /> 電話番号:</strong> {guest.phone}</p>
-                    <button
-                      type="button"
-                      className="edit-button"
-                      onClick={() => {
-                        setSelectedGuestDetail(guestDetail);
-                        setGuestModalOpen(true);
-                      }}
-                    >
-                      <FaEdit /> ゲスト情報を編集
-                    </button>
-                  </div>
+                <article
+                  key={guest.id || `g-${i}`}
+                  className={`sg-card ${guest.deleted ? 'is-deleted' : ''}`}
+                >
+                  <header className="sg-card__header">
+                    <div className="sg-avatar" aria-hidden="true">
+                      {String(guest.name || '？').charAt(0)}
+                    </div>
+                    <div className="sg-head">
+                      <div className="sg-title">
+                        <FaUser className="sg-ico" />
+                        <strong>{guest.name}</strong>
+                        {guest.deleted && (
+                          <span className="badge-deleted">
+                            <FaTrash style={{ marginRight: 4 }} />
+                            削除済み
+                          </span>
+                        )}
+                      </div>
+                      <div className="sg-sub">
+                        <span className="pill">
+                          {(() => {
+                            // 最新予約からプラン名推定
+                            const sorted = [...reservations].sort((a, b) =>
+                              (b?.checkInDate ?? '').localeCompare(a?.checkInDate ?? '')
+                            );
+                            const latest = sorted[0];
+                            const found =
+                              bookings.find((b) => b?.id === latest?.bookingId)?.name ||
+                              bookings[0]?.name;
+                            return found || 'プラン不明';
+                          })()}
+                        </span>
+                        <span className="sep">・</span>
+                        <span className="tel">
+                          <FaPhone className="sg-ico" />
+                          {guest.phone || '電話番号未登録'}
+                        </span>
+                      </div>
+                    </div>
 
-                  {/* 宿泊情報（予約ごと） */}
-                  <details className="reservation-info" style={{ borderTop: '1px solid #ddd', paddingTop: 10 }}>
+                    <div className="sg-actions">
+                      <button
+                        className="btn ghost"
+                        onClick={() => {
+                          setSelectedGuestDetail(detail);
+                          setGuestModalOpen(true);
+                        }}
+                      >
+                        <FaEdit /> ゲスト編集
+                      </button>
+                    </div>
+                  </header>
+
+                  {/* 予約（ドロップダウン） */}
+                  <details className="sg-details">
                     <summary>
-                      <strong><FaBed /> 宿泊情報（{visibleReservations.length}件）</strong>
+                      宿泊情報（{visibleReservations.length}件）
                     </summary>
 
-                    {visibleReservations.map((reservation) => {
-                      const booking =
-                        bookings.find(b => b.id === reservation.bookingId) || null;
+                    <div className="sg-res-list">
+                      {visibleReservations.length === 0 && (
+                        <div className="sg-res-empty">表示できる予約がありません。</div>
+                      )}
 
-                      const rowKey =
-                        reservation.id ||
-                        `${guestKey}-resv-${reservation.bookingId}-${reservation.checkInDate}`;
+                      {visibleReservations.map((r) => {
+                        const booking =
+                          bookings.find((b) => b?.id === r?.bookingId) || null;
 
-                      return (
-                        <div
-                          key={rowKey}
-                          className="reservation-row"
-                          style={{ padding: '8px 0', borderBottom: '1px dashed #e5e7eb' }}
-                        >
-                          <p><strong><FaCalendarAlt /> チェックイン日:</strong> {reservation.checkInDate}</p>
-                          <p><strong><FaCalendarAlt /> チェックアウト日:</strong> {reservation.checkOutDate}</p>
-                          <p><strong>宿泊日数:</strong> {reservation.stayDays} 泊</p>
-                          <p><strong>プラン名:</strong> {booking?.name ?? '不明'}</p>
-                          <p><strong><FaClipboardList /> ステータス:</strong> {reservation.status}</p>
-
-                          <button
-                            type="button"
-                            className="edit-button"
-                            onClick={() => {
-                              setSelectedReservation(reservation);
-                              setReservationModalOpen(true);
-                            }}
-                          >
-                            <FaEdit /> この予約を編集
-                          </button>
-                        </div>
-                      );
-                    })}
+                        return (
+                          <div key={r.id} className="sg-res-row">
+                            <div className="sg-res-main">
+                              <div className="sg-res-title">
+                                <FaBed className="sg-ico" />
+                                {booking?.name ?? 'プラン不明'}
+                              </div>
+                              <div className="sg-res-sub">
+                                <span>
+                                  <FaCalendarAlt className="sg-ico" />
+                                  CI: {r.checkInDate}
+                                </span>
+                                <span className="sep">/</span>
+                                <span>
+                                  <FaCalendarAlt className="sg-ico" />
+                                  CO: {r.checkOutDate}
+                                </span>
+                                <span className="sep">/</span>
+                                <span>泊数: {r.stayDays}</span>
+                                <span className="sep">/</span>
+                                <span>
+                                  <FaClipboardList className="sg-ico" />
+                                  {r.status}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="sg-res-actions">
+                              <button
+                                className="btn outline"
+                                onClick={() => {
+                                  setSelectedReservation(r);
+                                  setReservationModalOpen(true);
+                                }}
+                              >
+                                <FaEdit /> 予約編集
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </details>
-                </div>
+                </article>
               );
             })}
           </div>
         </div>
 
-        {/* ====== モーダル ====== */}
+        {/* ===== モーダル ===== */}
         {guestModalOpen && selectedGuestDetail && (
           <EditGuestModal
             guestDetail={selectedGuestDetail}

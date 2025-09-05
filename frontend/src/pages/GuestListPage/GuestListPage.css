@@ -1,210 +1,110 @@
 /* src/pages/GuestListPage/GuestListPage.css */
-/* ---- ベース ---- */
-.guest-list-page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px 20px 48px;
-  color: #111827;
+
+/* Base */
+.guest-list-page{max-width:960px;margin:0 auto;padding:24px 20px 48px;color:#111827;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;}
+.gl-header .gl-title{font-size:24px;font-weight:700;margin-bottom:4px;}
+.gl-header .gl-sub{color:#6b7280;margin-bottom:16px;font-size:.95rem;}
+
+/* Toolbar (search-page style) */
+.gl-toolbar{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.gl-form-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.gl-form-grid input{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;background:#f9fafb;font-size:.9rem;}
+.gl-form-grid input:focus{outline:none;border-color:#2563eb;background:#fff;box-shadow:0 0 0 2px rgba(37,99,235,.15);}
+.gl-actions-row{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:nowrap;}
+.gl-status-filter{display:flex;align-items:center;gap:8px;}
+.gl-status-filter select{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;background:#fff;}
+.gl-buttons{display:flex;gap:8px;}
+.btn{height:34px;padding:0 12px;font-size:.85rem;border-radius:8px;border:1px solid #d1d5db;background:#fff;cursor:pointer;transition:background .2s ease,transform .1s ease;}
+.btn:active{transform:scale(.97);}
+.btn.primary{background:#2563eb;border-color:#2563eb;color:#fff;}
+.btn.primary:hover{background:#1d4ed8;}
+.btn.ghost:hover{background:#f3f4f6;}
+.btn.outline{border-color:#2563eb;color:#2563eb;}
+.btn.outline:hover{background:#eff6ff;}
+.gl-count{margin-top:8px;color:#6b7280;font-size:.9rem;}
+
+/* List & Card */
+.gl-list{display:grid;gap:12px;}
+.gl-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+
+/* Guest header (search-page like) */
+.gl-guest-header{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.gl-guest-left{display:flex;align-items:center;gap:12px;}
+.gl-avatar{width:40px;height:40px;border-radius:999px;background:#eef2ff;color:#4338ca;display:grid;place-items:center;font-weight:800;}
+.gl-guest-texts{display:flex;flex-direction:column;gap:4px;}
+.gl-guest-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.gl-guest-name{font-size:1rem;font-weight:700;color:#111827;}
+.gl-guest-phone{font-size:.9rem;color:#6b7280;}
+.gl-pill-row{display:flex;gap:8px;}
+.gl-pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;color:#4338ca;font-size:.8rem;}
+
+.gl-edit-guest-btn{font-size:13px;padding:6px 10px;border-radius:8px;background:#f9fafb;border:1px solid #d1d5db;cursor:pointer;transition:background .2s ease;}
+.gl-edit-guest-btn:hover{background:#f3f4f6;}
+
+/* Reservations */
+.gl-details{margin-top:10px;}
+.gl-details>summary{font-size:14px;font-weight:500;color:#374151;cursor:pointer;list-style:none;padding:8px 12px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;transition:background .15s ease,border-color .15s ease;}
+.gl-details>summary::-webkit-details-marker{display:none;}
+.gl-details[open]>summary{background:#eef2ff;border-color:#c7d2fe;}
+
+.gl-reservations{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fcfcfe;border:1px dashed #e5e7eb;}
+.gl-res-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border:1px solid #eef2ff;border-radius:10px;background:#fff;margin-top:8px;}
+.gl-res-title{font-weight:600;font-size:.95rem;}
+.gl-res-sub{font-size:.9rem;color:#4b5563;}
+.gl-res-actions{display:flex;justify-content:flex-start;margin-top:4px;}
+.gl-res-actions .btn{height:28px;padding:0 10px;font-size:.8rem;border-color:#2563eb;color:#2563eb;}
+.gl-res-empty{color:#9ca3af;}
+
+/* Pager */
+.gl-pager{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:18px;}
+.gl-pagebtn{height:32px;padding:0 10px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;}
+.gl-pagebtn:disabled{opacity:.5;cursor:not-allowed;}
+.gl-pageinfo{color:#6b7280;font-size:.9rem;}
+
+/* States */
+.gl-state,.gl-error,.gl-empty{padding:18px 0;color:#6b7280;}
+.gl-error{color:#dc2626;}
+
+/* Responsive */
+@media (max-width: 680px){
+  .gl-form-grid{grid-template-columns:repeat(2,1fr);}
+  .gl-actions-row{flex-wrap:wrap;}
+  .gl-details>summary{width:100%;justify-content:center;}
 }
 
-.gl-header .gl-title {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: .02em;
-  margin: 4px 0 4px;
-  color: #111827;
-}
-.gl-header .gl-sub {
-  color: #6b7280;
-  margin-bottom: 16px;
+/* ---- 検索行の並びとボタンの改行防止を強化 ---- */
+.gl-actions-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:12px;
+  flex-wrap:nowrap;         /* 折り返し禁止 */
+  min-width: 0;
 }
 
-/* ---- ツールバー：検索 + ステータス ---- */
-.gl-toolbar {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.04);
-  margin-bottom: 16px;
+.gl-status-filter{ flex:0 0 auto; }
+.gl-buttons{
+  display:flex;
+  gap:8px;
+  flex:0 0 auto;            /* 伸縮させない */
+  white-space:nowrap;       /* 子ボタンを改行させない */
 }
 
-.gl-form-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-.gl-form-grid input[type="text"],
-.gl-form-grid input[type="date"] {
-  height: 40px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 0 12px;
-  background: #f9fafb;
-  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-}
-.gl-form-grid input:focus {
-  background: #fff;
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 3px rgba(147,197,253,.25);
-  outline: none;
+.btn{
+  white-space:nowrap;       /* ← ラベルを絶対に折り返さない */
 }
 
-.gl-actions-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-.gl-status-filter select {
-  height: 36px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 0 10px;
-  background: #fff;
-}
-.gl-buttons {
-  display: flex;
-  gap: 8px;
+/* 極端に狭い画面だけ折返し許可（任意） */
+@media (max-width: 640px){
+  .gl-actions-row{ flex-wrap:wrap; }
 }
 
-.btn {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  cursor: pointer;
-  transition: transform .02s ease, background .2s ease, border-color .2s ease;
+/* 削除済みトグルON時の軽い強調 */
+.btn-toggle-active {
+  background: #fff7ed;      /* ほんのりオレンジ */
+  border-color: #fdba74;
+  color: #b45309;
 }
-.btn:active { transform: translateY(1px); }
-.btn.primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+.btn-toggle-active:hover {
+  background: #ffedd5;
 }
-.btn.primary:hover { background: #4f46e5; }
-.btn.ghost:hover { background: #f3f4f6; }
-.btn.outline {
-  background: #fff;
-  border-color: #c7d2fe;
-  color: #4f46e5;
-}
-.btn.outline:hover { background: #eef2ff; }
-
-.gl-count {
-  margin-top: 8px;
-  color: #6b7280;
-  font-size: .95rem;
-}
-
-/* ---- リスト & カード ---- */
-.gl-list {
-  display: grid;
-  gap: 12px;
-}
-
-.gl-card {
-  display: grid;
-  grid-template-columns: 56px 1fr auto;
-  align-items: center;
-  gap: 16px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 14px 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.04);
-}
-
-.gl-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: #eef2ff;
-  color: #4338ca;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  font-size: 18px;
-}
-
-.gl-name {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 2px;
-}
-
-.gl-subrow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  color: #6b7280;
-}
-.gl-pill {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: #eef2ff;
-  border: 1px solid #c7d2fe;
-  color: #4338ca;
-  font-size: 12px;
-}
-.gl-sep { opacity: .6; }
-.gl-phone { letter-spacing: .02em; }
-
-.gl-right { display: flex; align-items: center; gap: 8px; }
-
-/* ---- 予約の details ---- */
-.gl-details {
-  margin-top: 8px;
-}
-.gl-details > summary {
-  cursor: pointer;
-  color: #4b5563;
-  padding: 6px 0;
-  list-style: none;
-}
-.gl-details > summary::-webkit-details-marker { display: none; }
-
-.gl-reservations {
-  margin-top: 8px;
-  border-top: 1px dashed #e5e7eb;
-}
-.gl-res-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px dashed #f1f5f9;
-}
-.gl-res-title { font-weight: 600; color: #111827; }
-.gl-res-sub { color: #6b7280; font-size: .95rem; }
-.gl-res-empty { color: #9ca3af; padding: 10px 0; }
-
-/* ---- ページャ ---- */
-.gl-pager {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 18px;
-}
-.gl-pagebtn {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  cursor: pointer;
-}
-.gl-pagebtn:disabled { opacity: .5; cursor: not-allowed; }
-.gl-pageinfo { color: #6b7280; }
-
-/* ---- 状態 ---- */
-.gl-state, .gl-error, .gl-empty {
-  padding: 18px 0;
-  color: #6b7280;
-}
-.gl-error { color: #dc2626; }
