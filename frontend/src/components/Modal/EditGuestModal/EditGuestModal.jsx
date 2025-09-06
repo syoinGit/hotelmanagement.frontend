@@ -33,7 +33,7 @@ const EditGuestModal = ({ guestDetail, onClose }) => {
       region: guest.region ?? '',
       email: guest.email ?? '',
       phone: guest.phone ?? '',
-      deleted: !!guest.deleted, // boolean化
+      deleted: !!guest.deleted,
     });
   }, [guest]);
 
@@ -63,22 +63,20 @@ const EditGuestModal = ({ guestDetail, onClose }) => {
     }
   };
 
-  // ② 削除/復元（PUT /guest/delete?id=&name=&deleted=）
-  //    - deleted=true で「削除」
-  //    - deleted=false で「復元」
-  // サーバは ResponseEntity<String> で本文を返す想定 → res.data が文字列
-  const handleToggleDelete = async (nextDeleted) => {
+  // ② 論理削除のトグル（PUT /guest/deleted?id=&name=）
+  // サーバ側で削除フラグをトグルします（true<->false）。
+  const handleLogicalDelete = async () => {
     try {
-      const res = await axios.put(`${API_BASE}/guest/delete`, null, {
+      const res = await axios.put(`${API_BASE}/guest/deleted`, null, {
         params: {
           id: formData.id,
-          name: formData.name,     // ★ name も送る 
+          name: formData.name,
         },
       });
-      alert(res?.data ?? '更新しました'); // ← 返却メッセージをそのまま表示
+      alert(res?.data ?? '更新しました');
       onClose?.();
     } catch (error) {
-      console.error('❌ 削除/復元エラー:', error);
+      console.error('❌ 論理削除エラー:', error);
       alert('削除/復元に失敗しました');
     }
   };
@@ -160,24 +158,14 @@ const EditGuestModal = ({ guestDetail, onClose }) => {
             保存
           </button>
 
-          {/* トグル動作：現在が削除済みなら「復元」、未削除なら「削除」 */}
-          {formData.deleted ? (
-            <button
-              className="btn ghost"
-              onClick={() => handleToggleDelete(false)}
-              title="削除を戻す"
-            >
-              削除を戻す
-            </button>
-          ) : (
-            <button
-              className="btn danger"
-              onClick={() => handleToggleDelete(true)}
-              title="削除する"
-            >
-              削除する
-            </button>
-          )}
+          {/* 現在の削除状態に応じてラベルだけ変更（処理は同じトグル） */}
+          <button
+            className={formData.deleted ? 'btn ghost' : 'btn danger'}
+            onClick={handleLogicalDelete}
+            title={formData.deleted ? '削除を戻す' : '削除する'}
+          >
+            {formData.deleted ? '削除を戻す' : '削除する'}
+          </button>
 
           <button className="btn" onClick={onClose}>
             キャンセル
