@@ -1,110 +1,386 @@
-/* src/pages/GuestListPage/GuestListPage.css */
+/* =============================
+   GuestListPage.css
+   宿泊者一覧 + 検索（YouTube風行レイアウト）
+   ============================= */
 
-/* Base */
-.guest-list-page{max-width:960px;margin:0 auto;padding:24px 20px 48px;color:#111827;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;}
-.gl-header .gl-title{font-size:24px;font-weight:700;margin-bottom:4px;}
-.gl-header .gl-sub{color:#6b7280;margin-bottom:16px;font-size:.95rem;}
-
-/* Toolbar (search-page style) */
-.gl-toolbar{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
-.gl-form-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-.gl-form-grid input{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;background:#f9fafb;font-size:.9rem;}
-.gl-form-grid input:focus{outline:none;border-color:#2563eb;background:#fff;box-shadow:0 0 0 2px rgba(37,99,235,.15);}
-.gl-actions-row{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:nowrap;}
-.gl-status-filter{display:flex;align-items:center;gap:8px;}
-.gl-status-filter select{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;background:#fff;}
-.gl-buttons{display:flex;gap:8px;}
-.btn{height:34px;padding:0 12px;font-size:.85rem;border-radius:8px;border:1px solid #d1d5db;background:#fff;cursor:pointer;transition:background .2s ease,transform .1s ease;}
-.btn:active{transform:scale(.97);}
-.btn.primary{background:#2563eb;border-color:#2563eb;color:#fff;}
-.btn.primary:hover{background:#1d4ed8;}
-.btn.ghost:hover{background:#f3f4f6;}
-.btn.outline{border-color:#2563eb;color:#2563eb;}
-.btn.outline:hover{background:#eff6ff;}
-.gl-count{margin-top:8px;color:#6b7280;font-size:.9rem;}
-
-/* List & Card */
-.gl-list{display:grid;gap:12px;}
-.gl-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
-
-/* Guest header (search-page like) */
-.gl-guest-header{display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.gl-guest-left{display:flex;align-items:center;gap:12px;}
-.gl-avatar{width:40px;height:40px;border-radius:999px;background:#eef2ff;color:#4338ca;display:grid;place-items:center;font-weight:800;}
-.gl-guest-texts{display:flex;flex-direction:column;gap:4px;}
-.gl-guest-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.gl-guest-name{font-size:1rem;font-weight:700;color:#111827;}
-.gl-guest-phone{font-size:.9rem;color:#6b7280;}
-.gl-pill-row{display:flex;gap:8px;}
-.gl-pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;color:#4338ca;font-size:.8rem;}
-
-.gl-edit-guest-btn{font-size:13px;padding:6px 10px;border-radius:8px;background:#f9fafb;border:1px solid #d1d5db;cursor:pointer;transition:background .2s ease;}
-.gl-edit-guest-btn:hover{background:#f3f4f6;}
-
-/* Reservations */
-.gl-details{margin-top:10px;}
-.gl-details>summary{font-size:14px;font-weight:500;color:#374151;cursor:pointer;list-style:none;padding:8px 12px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;transition:background .15s ease,border-color .15s ease;}
-.gl-details>summary::-webkit-details-marker{display:none;}
-.gl-details[open]>summary{background:#eef2ff;border-color:#c7d2fe;}
-
-.gl-reservations{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fcfcfe;border:1px dashed #e5e7eb;}
-.gl-res-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border:1px solid #eef2ff;border-radius:10px;background:#fff;margin-top:8px;}
-.gl-res-title{font-weight:600;font-size:.95rem;}
-.gl-res-sub{font-size:.9rem;color:#4b5563;}
-.gl-res-actions{display:flex;justify-content:flex-start;margin-top:4px;}
-.gl-res-actions .btn{height:28px;padding:0 10px;font-size:.8rem;border-color:#2563eb;color:#2563eb;}
-.gl-res-empty{color:#9ca3af;}
-
-/* Pager */
-.gl-pager{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:18px;}
-.gl-pagebtn{height:32px;padding:0 10px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;}
-.gl-pagebtn:disabled{opacity:.5;cursor:not-allowed;}
-.gl-pageinfo{color:#6b7280;font-size:.9rem;}
-
-/* States */
-.gl-state,.gl-error,.gl-empty{padding:18px 0;color:#6b7280;}
-.gl-error{color:#dc2626;}
-
-/* Responsive */
-@media (max-width: 680px){
-  .gl-form-grid{grid-template-columns:repeat(2,1fr);}
-  .gl-actions-row{flex-wrap:wrap;}
-  .gl-details>summary{width:100%;justify-content:center;}
+:root {
+  --gl-bg: #f7f7f9;
+  --gl-panel: #ffffff;
+  --gl-elev: #fafafa;
+  --gl-border: #e5e7eb;
+  --gl-border-softer: #eef0f4;
+  --gl-text: #111827;
+  --gl-text-weak: #374151;
+  --gl-text-mute: #6b7280;
+  --gl-accent: #2563eb;
+  --gl-danger: #e11d48;
+  --gl-success: #059669;
+  --gl-warning: #d97706;
+  --gl-focus: #2563eb;
+  --gl-radius: 10px;
+  --gl-radius-sm: 8px;
+  --gl-shadow: 0 6px 20px rgba(0,0,0,.06);
+  --gl-font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
-/* ---- 検索行の並びとボタンの改行防止を強化 ---- */
-.gl-actions-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-top:12px;
-  flex-wrap:nowrap;         /* 折り返し禁止 */
+/* ページ */
+.guest-list-page {
+  color: var(--gl-text);
+  font-family: var(--gl-font);
+  background: var(--gl-bg);
+  padding: 24px clamp(16px, 3vw, 32px);
+  min-height: 100dvh;
+}
+
+/* ヘッダー */
+.gl-header {
+  margin: 0 0 16px 0;
+}
+.gl-title {
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.25;
+  margin: 0 0 6px 0;
+  font-weight: 700;
+}
+.gl-sub {
+  margin: 0;
+  color: var(--gl-text-mute);
+  font-size: 14px;
+}
+
+/* ツールバー */
+.gl-toolbar {
+  background: var(--gl-panel);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  padding: 14px;
+  box-shadow: var(--gl-shadow);
+  margin-bottom: 18px;
+}
+
+/* 検索カード */
+.gl-search-card {
+  background: var(--gl-panel);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  padding: 14px;
+}
+.gl-search-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* フィルターカード（ステータス + 削除済みトグル） */
+.gl-filter-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--gl-panel);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  padding: 12px 14px;
+}
+
+.gl-form-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gl-form-grid input[type="text"],
+.gl-form-grid input[type="date"],
+.gl-form-grid select {
+  background: var(--gl-elev);
+  color: var(--gl-text);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.gl-form-grid input:focus,
+.gl-form-grid select:focus {
+  outline: none;
+  border-color: var(--gl-focus);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gl-focus) 35%, transparent);
+}
+
+.gl-actions-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gl-status-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.gl-status-filter select {
+  background: var(--gl-elev);
+  color: var(--gl-text);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius-sm);
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.gl-buttons { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+
+/* ボタン */
+.btn {
+  appearance: none;
+  border: 1px solid var(--gl-border);
+  background: var(--gl-elev);
+  color: var(--gl-text);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .02s ease;
+}
+.btn:hover { background: #242424; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.btn.primary {
+  background: var(--gl-accent);
+  color: #081018;
+  border-color: color-mix(in oklab, var(--gl-accent) 80%, #000 20%);
+}
+.btn.primary:hover { filter: brightness(1.08); }
+
+.btn.ghost { background: transparent; }
+.btn.ghost:hover { background: #1d1d1d; }
+.btn.ghost.btn-toggle-active {
+  border-color: var(--gl-accent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--gl-accent) 40%, transparent);
+}
+
+.btn.outline {
+  background: transparent;
+  border-color: var(--gl-border);
+}
+
+.btn-sm { padding: 7px 10px; font-size: 12.5px; }
+
+/* 件数表示 */
+.gl-count {
+  margin-top: 10px;
+  color: var(--gl-text-weak);
+  font-size: 13px;
+}
+
+/* ステート / エラー */
+.gl-state,
+.gl-error,
+.gl-empty {
+  background: var(--gl-panel);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  padding: 14px;
+  box-shadow: var(--gl-shadow);
+  margin: 12px 0;
+}
+.gl-error { border-color: color-mix(in oklab, var(--gl-danger) 50%, var(--gl-border) 50%); color: #ffd6d6; }
+.gl-empty { color: var(--gl-text-weak); }
+
+/* リスト */
+.yt-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* 行（1件） */
+.yt-row {
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  background: var(--gl-panel);
+  box-shadow: var(--gl-shadow);
+}
+
+/* メイン行（クリック展開） */
+.yt-main {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto; /* avatar | texts | hint | actions */
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.yt-main:hover { background: var(--gl-elev); }
+.yt-main.expanded { border-bottom: 1px solid var(--gl-border); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+/* キーボードフォーカス（コンテナにtabIndexあり） */
+.yt-main:focus { outline: none; box-shadow: inset 0 0 0 2px var(--gl-focus); }
+
+/* アバター（頭文字） */
+.yt-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #eef2f7;
+  color: #374151;
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 16px;
+}
+
+/* テキストブロック */
+.yt-texts { min-width: 0; }
+.yt-title {
+  font-size: 16px; font-weight: 700; line-height: 1.25;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.yt-sub {
+  margin-top: 4px;
+  color: var(--gl-text-weak);
+  font-size: 13px; line-height: 1.2;
+  display: flex; align-items: center; gap: 6px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.yt-kana { letter-spacing: .03em; }
+.yt-dot { opacity: .7; }
+.yt-phone { font-variant-numeric: tabular-nums; }
+
+/* 展開ヒントを行の“下”に自然に回り込ませる（長い日本語でもズレない） */
+.yt-expand-hint {
+  justify-self: end;
+  color: var(--gl-text-mute);
+  font-size: 12px;
+}
+
+/* 右端インライン操作（行クリック無効化の対象） */
+.yt-actions-inline { display: inline-flex; gap: 8px; }
+.yt-actions-inline .btn { padding: 5px 10px; font-size: 12.5px; }
+
+/* 展開部 */
+.yt-expand { background: var(--gl-elev); padding: 10px 14px 14px; border-bottom-left-radius: var(--gl-radius); border-bottom-right-radius: var(--gl-radius); }
+
+/* 予約一覧 */
+.gl-reservations { display: flex; flex-direction: column; gap: 8px; }
+.gl-res-empty {
+  background: var(--gl-elev);
+  border: 1px dashed var(--gl-border);
+  border-radius: var(--gl-radius-sm);
+  color: var(--gl-text-mute);
+  padding: 12px;
+}
+
+.gl-res-row {
+  display: grid;
+  grid-template-columns: 1fr auto; /* main | actions */
+  gap: 10px;
+  align-items: center;
+  background: var(--gl-elev);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius-sm);
+  padding: 10px 12px;
+}
+.gl-res-title { font-weight: 700; font-size: 14px; }
+.gl-res-sub { margin-top: 4px; font-size: 13px; color: var(--gl-text-weak); }
+.gl-res-actions .btn { padding: 5px 10px; font-size: 12.5px; }
+
+/* ページャ */
+.gl-pager {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 16px;
+}
+.gl-pagebtn {
+  background: var(--gl-elev);
+  color: var(--gl-text);
+  border: 1px solid var(--gl-border);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gl-pagebtn:disabled { opacity: .5; cursor: not-allowed; }
+.gl-pageinfo { color: var(--gl-text-weak); font-size: 13px; }
+
+/* ステータス色の参考（必要に応じてバッジ等で使用） */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge.temp { background: #35312d; color: #ffd29b; }
+.badge.in   { background: #173022; color: #a0f0c5; }
+.badge.not  { background: #2a2a2a; color: #ddd; }
+.badge.out  { background: #2a2730; color: #d8c3ff; }
+.badge.cancel { background: #3a1f1f; color: #ffb1b1; }
+
+/* レスポンシブ */
+@media (max-width: 1024px) {
+  .gl-form-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .gl-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .yt-main { grid-template-columns: auto 1fr auto; gap: 10px; }
+  .yt-expand-hint { grid-column: 2 / 3; justify-self: start; margin-top: 6px; }
+  .yt-actions-inline { grid-column: 3 / 4; }
+}
+@media (max-width: 520px) {
+  .gl-actions-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .gl-buttons { width: 100%; }
+  .gl-buttons .btn { flex: 1 1 auto; width: 100%; }
+  .gl-status-filter { width: 100%; justify-content: space-between; }
+
+  .yt-main { grid-template-columns: auto 1fr; }
+  .yt-expand-hint { grid-column: 1 / -1; justify-self: start; }
+  .yt-actions-inline { grid-column: 1 / -1; justify-content: flex-end; }
+
+  .gl-res-row { grid-template-columns: 1fr; }
+  .gl-res-actions { justify-self: end; }
+
+  .gl-filter-card { flex-direction: column; align-items: stretch; }
+}
+
+/* もし未設定なら追加 */
+.gl-search-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.gl-filter-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.gl-status-filter select,
+.gl-deleted-filter select { padding:8px 10px; }
+
+/* 検索ボタン横並び */
+.gl-search-actions {
+  display: flex;
+  justify-content: center;   /* 中央寄せ。左寄せなら flex-start に */
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 0;                /* 余計な枠や余白があれば消す */
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* もし幅100%指定が当たっている場合の保険 */
+.gl-search-actions .btn {
+  width: auto;
   min-width: 0;
+  display: inline-flex;
 }
 
-.gl-status-filter{ flex:0 0 auto; }
-.gl-buttons{
-  display:flex;
-  gap:8px;
-  flex:0 0 auto;            /* 伸縮させない */
-  white-space:nowrap;       /* 子ボタンを改行させない */
+/* ▼ 検索ボタンを横並びで“2つセット”として固定 */
+.gl-search-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;      /* 中央に2つだけ並べたい場合。左寄せなら flex-start */
+  align-items: center;
+  margin-top: 12px;
 }
 
-.btn{
-  white-space:nowrap;       /* ← ラベルを絶対に折り返さない */
+.gl-search-actions .btn {
+  flex: 0 0 auto !important;    /* 伸びない */
+  width: auto !important;       /* 横幅固定（テキストぶんだけ） */
+  min-width: 0 !important;
+  display: inline-flex;
 }
 
-/* 極端に狭い画面だけ折返し許可（任意） */
-@media (max-width: 640px){
-  .gl-actions-row{ flex-wrap:wrap; }
+/* 念のためボタンの余計な伸長ルールを無効化（他CSSの影響対策） */
+.gl-search-actions .btn.primary,
+.gl-search-actions .btn.ghost {
+  flex: 0 0 auto !important;
+  width: auto !important;
 }
 
-/* 削除済みトグルON時の軽い強調 */
-.btn-toggle-active {
-  background: #fff7ed;      /* ほんのりオレンジ */
-  border-color: #fdba74;
-  color: #b45309;
-}
-.btn-toggle-active:hover {
-  background: #ffedd5;
+/* もし親に grid が効いていると崩れるので明示的に通常フローに */
+.gl-toolbar .gl-search-actions {
+  grid-column: 1 / -1;          /* 入力グリッドの下にフル幅で配置 */
 }

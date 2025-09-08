@@ -1,3 +1,4 @@
+// src/pages/GuestListPage/GuestListPage.jsx
 import React, { useEffect, useMemo, useState } from 'react';
 import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
 import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
@@ -25,8 +26,8 @@ export default function GuestList() {
     checkOutDate: '',
   });
 
-  // 表示トグル
-  const [showDeleted, setShowDeleted] = useState(false); // ← 追加：削除済みを表示
+  // 表示トグル（削除済みの扱い）
+  const [showDeleted, setShowDeleted] = useState(false);
 
   // ステータス絞り込み
   const [filterStatus, setFilterStatus] = useState('ALL');
@@ -39,6 +40,18 @@ export default function GuestList() {
   const [reservationModalOpen, setReservationModalOpen] = useState(false);
   const [selectedGuestDetail, setSelectedGuestDetail] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null);
+
+  // 展開状態（YouTube ダッシュボード風アコーディオン）
+  const [expanded, setExpanded] = useState(() => new Set());
+
+  const toggleExpand = (id) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   // 初回: 全件
   useEffect(() => {
@@ -75,7 +88,7 @@ export default function GuestList() {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...q, showDeleted }), // ← 追加：API にも渡す
+            body: JSON.stringify({ ...q, showDeleted }), // 削除済み表示の要否も渡す
           }
         : { credentials: 'include' };
       const res = await fetch(url, opt);
@@ -98,17 +111,13 @@ export default function GuestList() {
     setPage(1);
   };
 
-  // 「削除済み」トグルのラベル
-  const deletedToggleLabel = showDeleted ? '削除済みを非表示' : '削除済みも表示';
-
-  // 「削除済み」フィルタをまず適用
+  // 表示用データ（削除済みフィルタ → ステータス絞り込み）
   const baseVisible = useMemo(() => {
     if (showDeleted) return guests;
     // guest.deleted が真のゲストを非表示
-    return (guests ?? []).filter(g => !g?.guest?.deleted);
+    return (guests ?? []).filter((g) => !g?.guest?.deleted);
   }, [guests, showDeleted]);
 
-  // 次にステータス絞り込み
   const filtered = useMemo(() => {
     if (filterStatus === 'ALL') return baseVisible;
     return (baseVisible ?? []).filter((g) =>
@@ -129,6 +138,7 @@ export default function GuestList() {
     const { guest, reservations = [], bookings = [] } = detail ?? {};
     const name = guest?.name ?? '不明なゲスト';
     const phone = guest?.phone || '電話番号未登録';
+    const kana = guest?.kanaName || '';
     const sorted = [...reservations].sort((a, b) =>
       (b?.checkInDate ?? '').localeCompare(a?.checkInDate ?? '')
     );
@@ -136,7 +146,7 @@ export default function GuestList() {
     const plan =
       bookings.find((b) => b?.id === latest?.bookingId)?.name ??
       (bookings[0]?.name || 'プラン不明');
-    return { name, phone, plan };
+    return { name, kana, phone, plan };
   };
 
   // モーダル後の再取得
@@ -148,60 +158,77 @@ export default function GuestList() {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...q, showDeleted }), // ← 検索条件維持
+            body: JSON.stringify({ ...q, showDeleted }), // 検索条件維持
           }
         : { credentials: 'include' };
       const res = await fetch(url, opt);
       const data = await res.json();
       setGuests(Array.isArray(data) ? data : []);
-    } catch {}
+    } catch {
+      // no-op
+    }
   };
 
   return (
     <div className="guest-list-page">
       <header className="gl-header">
         <h1 className="gl-title">宿泊者一覧</h1>
-        <p className="gl-sub">ダッシュボードと同じカードUIで、検索・絞り込み・編集ができます。</p>
+        <p className="gl-sub">
+          YouTubeダッシュボード風の行レイアウトで、検索・絞り込み・編集ができます。
+        </p>
       </header>
 
-      {/* 検索ツールバー */}
+      {/* 検索ツールバー（検索のみ） */}
       <section className="gl-toolbar">
         <div className="gl-form-grid">
           <input
             type="text"
             placeholder="名前"
             value={q.name}
-            onChange={(e)=>setQ(prev=>({...prev, name: e.target.value}))}
+            onChange={(e) => setQ((prev) => ({ ...prev, name: e.target.value }))}
           />
           <input
             type="text"
             placeholder="フリガナ"
             value={q.kanaName}
-            onChange={(e)=>setQ(prev=>({...prev, kanaName: e.target.value}))}
+            onChange={(e) => setQ((prev) => ({ ...prev, kanaName: e.target.value }))}
           />
           <input
             type="text"
             placeholder="電話番号"
             value={q.phone}
-            onChange={(e)=>setQ(prev=>({...prev, phone: e.target.value}))}
+            onChange={(e) => setQ((prev) => ({ ...prev, phone: e.target.value }))}
             inputMode="tel"
           />
           <input
             type="date"
             value={q.checkInDate}
-            onChange={(e)=>setQ(prev=>({...prev, checkInDate: e.target.value}))}
+            onChange={(e) => setQ((prev) => ({ ...prev, checkInDate: e.target.value }))}
           />
           <input
             type="date"
             value={q.checkOutDate}
-            onChange={(e)=>setQ(prev=>({...prev, checkOutDate: e.target.value}))}
+            onChange={(e) => setQ((prev) => ({ ...prev, checkOutDate: e.target.value }))}
           />
         </div>
 
-        <div className="gl-actions-row">
+        {/* 検索する / クリア（横並び） */}
+        <div className="gl-search-actions">
+          <button className="btn primary btn-sm" type="button" onClick={handleSearch}>
+            検索する
+          </button>
+          <button className="btn ghost btn-sm" type="button" onClick={handleClear}>
+            クリア
+          </button>
+        </div>
+      </section>
+
+      {/* フィルターバー（検索部分の外） */}
+      <section className="gl-filterbar">
+        <div className="gl-filter-row">
           <div className="gl-status-filter">
-            <label style={{marginRight: 6}}>ステータス：</label>
-            <select value={filterStatus} onChange={(e)=>setFilterStatus(e.target.value)}>
+            <label style={{ marginRight: 6 }}>ステータス：</label>
+            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
               <option value="ALL">すべて</option>
               <option value="TEMPORARY">仮予約</option>
               <option value="NOT_CHECKED_IN">未チェックイン</option>
@@ -211,106 +238,140 @@ export default function GuestList() {
             </select>
           </div>
 
-          <div className="gl-buttons">
-            <button className="btn primary" type="button" onClick={handleSearch}>検索する</button>
-            <button className="btn ghost" type="button" onClick={handleClear}>クリア</button>
-            <button
-              type="button"
-              className={`btn ghost ${showDeleted ? 'btn-toggle-active' : ''}`}
-              aria-pressed={showDeleted}
-              onClick={() => setShowDeleted(v => !v)}
-              title="削除フラグのあるゲストを表示/非表示"
+          {/* 削除済みの表示制御をセレクトメニュー化 */}
+          <div className="gl-deleted-filter">
+            <label style={{ marginRight: 6 }}>表示：</label>
+            <select
+              value={showDeleted ? 'INCLUDE' : 'EXCLUDE'}
+              onChange={(e) => setShowDeleted(e.target.value === 'INCLUDE')}
+              title="削除フラグのあるゲストの表示/非表示"
             >
-              {deletedToggleLabel}
-            </button>
+              <option value="EXCLUDE">削除済みを非表示</option>
+              <option value="INCLUDE">削除済みも表示</option>
+            </select>
           </div>
         </div>
-
-        <div className="gl-count">
-          全{total}件中 {total ? start + 1 : 0}-{Math.min(end, total)}件を表示
-        </div>
       </section>
+
+      {/* 件数 */}
+      <div className="gl-count">
+        全{total}件中 {total ? start + 1 : 0}-{Math.min(end, total)}件を表示
+      </div>
 
       {loading && <div className="gl-state">読み込み中…</div>}
       {err && <div className="gl-error">{err}</div>}
 
       {!loading && !err && (
         <>
-          <div className="gl-list">
-            {pageItems.length === 0 && <div className="gl-empty">該当する宿泊者がいません。</div>}
+          <div className="yt-list">
+            {pageItems.length === 0 && (
+              <div className="gl-empty">該当する宿泊者がいません。</div>
+            )}
 
             {pageItems.map((gd, i) => {
               const { guest, reservations = [], bookings = [] } = gd ?? {};
               const head = resolveHeader(gd);
+              const guestId = guest?.id || String(i);
+              const isOpen = expanded.has(guestId);
 
               return (
-                <article className="gl-card" key={guest?.id || i}>
-                  {/* 上段：左（アバター+名前+電話）/ 右（ゲスト編集） */}
-                  <div className="gl-guest-header">
-                    <div className="gl-guest-left">
-                      <div className="gl-avatar">{String(head.name || '？').charAt(0)}</div>
-                      <div className="gl-guest-texts">
-                        <div className="gl-guest-top">
-                          <span className="gl-guest-name">{head.name}</span>
-                          <span className="gl-guest-phone">（{head.phone}）</span>
-                        </div>
+                <article className="yt-row" key={guestId}>
+                  {/* 1行目：行クリックで開閉（右端ボタンはクリックしても開閉しない） */}
+                  <div
+                    className={`yt-main ${isOpen ? 'expanded' : ''}`}
+                    role="button"
+                    aria-expanded={isOpen}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleExpand(guestId);
+                      }
+                    }}
+                    onClick={(e) => {
+                      const t = e.target;
+                      if (t instanceof Element && t.closest('.yt-actions-inline')) return;
+                      toggleExpand(guestId);
+                    }}
+                  >
+                    <div className="yt-avatar">{String(head.name || '？').charAt(0)}</div>
+                    <div className="yt-texts">
+                      <div className="yt-title">{head.name}</div>
+                      <div className="yt-sub">
+                        {head.kana && <span className="yt-kana">{head.kana}</span>}
+                        <span className="yt-dot">・</span>
+                        <span className="yt-phone">{head.phone}</span>
                       </div>
                     </div>
+                    <div className="yt-expand-hint" aria-hidden="true">
+                      {isOpen ? '▼ 宿泊予約を閉じる' : `▶ 宿泊予約を表示（${reservations.length}件）`}
+                    </div>
 
-                    <button
-                      className="gl-edit-guest-btn"
-                      onClick={()=>{
-                        setSelectedGuestDetail(gd);
-                        setGuestModalOpen(true);
-                      }}
-                    >
-                      ゲスト編集
-                    </button>
+                    <div className="yt-actions-inline">
+                      <button
+                        className="btn ghost"
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          setSelectedGuestDetail(gd);
+                          setGuestModalOpen(true);
+                        }}
+                      >
+                        ゲスト編集
+                      </button>
+                    </div>
                   </div>
 
-                  {/* 下段：宿泊予約 */}
-                  <details className="gl-details">
-                    <summary>宿泊情報（{reservations.length}件）</summary>
+                  {/* 2行目：展開領域（予約一覧） */}
+                  {isOpen && (
+                    <div className="yt-expand">
+                      <div className="gl-reservations">
+                        {reservations.length === 0 && (
+                          <div className="gl-res-empty">予約情報がありません。</div>
+                        )}
 
-                    <div className="gl-reservations">
-                      {reservations.length === 0 && (
-                        <div className="gl-res-empty">予約情報がありません。</div>
-                      )}
+                        {reservations.map((r) => {
+                          const booking =
+                            bookings.find((b) => b?.id === r?.bookingId) || null;
+                          const statusJa =
+                            r?.status === 'CHECKED_IN'
+                              ? 'チェックイン済み'
+                              : r?.status === 'NOT_CHECKED_IN'
+                              ? '未チェックイン'
+                              : r?.status === 'CHECKED_OUT'
+                              ? 'チェックアウト済み'
+                              : r?.status === 'TEMPORARY'
+                              ? '仮予約'
+                              : r?.status === 'CANCELLED'
+                              ? 'キャンセル済み'
+                              : r?.status || '-';
 
-                      {reservations.map((r) => {
-                        const booking = bookings.find(b=>b?.id===r?.bookingId) || null;
-                        const statusJa = (
-                          r?.status === 'CHECKED_IN' ? 'チェックイン済み' :
-                          r?.status === 'NOT_CHECKED_IN' ? '未チェックイン' :
-                          r?.status === 'CHECKED_OUT' ? 'チェックアウト済み' :
-                          r?.status === 'TEMPORARY' ? '仮予約' :
-                          r?.status === 'CANCELLED' ? 'キャンセル済み' :
-                          (r?.status || '-')
-                        );
-                        return (
-                          <div className="gl-res-row" key={r.id}>
-                            <div className="gl-res-main">
-                              <div className="gl-res-title">{booking?.name ?? 'プラン不明'}</div>
-                              <div className="gl-res-sub">
-                                チェックイン日: {r.checkInDate} / チェックアウト日: {r.checkOutDate} / 泊数: {r.stayDays} / ステータス: {statusJa}
+                          return (
+                            <div className="gl-res-row" key={r.id}>
+                              <div className="gl-res-main">
+                                <div className="gl-res-title">
+                                  {booking?.name ?? 'プラン不明'}
+                                </div>
+                                <div className="gl-res-sub">
+                                  チェックイン日: {r.checkInDate} / チェックアウト日: {r.checkOutDate} / 泊数: {r.stayDays} / ステータス: {statusJa}
+                                </div>
+                              </div>
+                              <div className="gl-res-actions">
+                                <button
+                                  className="btn outline"
+                                  onClick={() => {
+                                    setSelectedReservation(r);
+                                    setReservationModalOpen(true);
+                                  }}
+                                >
+                                  予約編集
+                                </button>
                               </div>
                             </div>
-                            <div className="gl-res-actions">
-                              <button
-                                className="btn outline"
-                                onClick={()=>{
-                                  setSelectedReservation(r);
-                                  setReservationModalOpen(true);
-                                }}
-                              >
-                                予約編集
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
-                  </details>
+                  )}
                 </article>
               );
             })}
@@ -318,9 +379,23 @@ export default function GuestList() {
 
           {/* ページャ */}
           <div className="gl-pager" role="navigation" aria-label="ページ移動">
-            <button className="gl-pagebtn" onClick={()=>setPage(p=>Math.max(1, p-1))} disabled={safePage===1}>前へ</button>
-            <span className="gl-pageinfo">{safePage} / {totalPages}</span>
-            <button className="gl-pagebtn" onClick={()=>setPage(p=>Math.min(totalPages, p+1))} disabled={safePage===totalPages}>次へ</button>
+            <button
+              className="gl-pagebtn"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+            >
+              前へ
+            </button>
+            <span className="gl-pageinfo">
+              {safePage} / {totalPages}
+            </span>
+            <button
+              className="gl-pagebtn"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+            >
+              次へ
+            </button>
           </div>
         </>
       )}
@@ -329,7 +404,7 @@ export default function GuestList() {
       {guestModalOpen && selectedGuestDetail && (
         <EditGuestModal
           guestDetail={selectedGuestDetail}
-          onClose={async ()=>{
+          onClose={async () => {
             setGuestModalOpen(false);
             setSelectedGuestDetail(null);
             await refetch();
@@ -339,7 +414,7 @@ export default function GuestList() {
       {reservationModalOpen && selectedReservation && (
         <EditReservationModal
           reservation={selectedReservation}
-          onClose={async ()=>{
+          onClose={async () => {
             setReservationModalOpen(false);
             setSelectedReservation(null);
             await refetch();
