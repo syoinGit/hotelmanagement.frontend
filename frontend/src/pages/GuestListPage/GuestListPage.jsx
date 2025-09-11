@@ -26,7 +26,7 @@ export default function GuestList() {
     checkOutDate: '',
   });
 
-  // 表示トグル（削除済みの扱い）
+  // 削除済み表示
   const [showDeleted, setShowDeleted] = useState(false);
 
   // ステータス絞り込み
@@ -41,9 +41,8 @@ export default function GuestList() {
   const [selectedGuestDetail, setSelectedGuestDetail] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
-  // 展開状態（YouTube ダッシュボード風アコーディオン）
+  // 展開状態
   const [expanded, setExpanded] = useState(() => new Set());
-
   const toggleExpand = (id) => {
     setExpanded((prev) => {
       const next = new Set(prev);
@@ -88,7 +87,7 @@ export default function GuestList() {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...q, showDeleted }), // 削除済み表示の要否も渡す
+            body: JSON.stringify({ ...q, showDeleted }),
           }
         : { credentials: 'include' };
       const res = await fetch(url, opt);
@@ -111,10 +110,9 @@ export default function GuestList() {
     setPage(1);
   };
 
-  // 表示用データ（削除済みフィルタ → ステータス絞り込み）
+  // 表示用データ
   const baseVisible = useMemo(() => {
     if (showDeleted) return guests;
-    // guest.deleted が真のゲストを非表示
     return (guests ?? []).filter((g) => !g?.guest?.deleted);
   }, [guests, showDeleted]);
 
@@ -133,7 +131,7 @@ export default function GuestList() {
   const end = start + PAGE_SIZE;
   const pageItems = filtered.slice(start, end);
 
-  // 見出し用（最新プラン/電話）
+  // 見出し用
   const resolveHeader = (detail) => {
     const { guest, reservations = [], bookings = [] } = detail ?? {};
     const name = guest?.name ?? '不明なゲスト';
@@ -149,7 +147,7 @@ export default function GuestList() {
     return { name, kana, phone, plan };
   };
 
-  // モーダル後の再取得
+  // 再取得（モーダルクローズ時など）
   const refetch = async () => {
     try {
       const url = canSearch ? `${API_BASE}/guest/search` : `${API_BASE}/guests`;
@@ -158,7 +156,7 @@ export default function GuestList() {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...q, showDeleted }), // 検索条件維持
+            body: JSON.stringify({ ...q, showDeleted }),
           }
         : { credentials: 'include' };
       const res = await fetch(url, opt);
@@ -173,14 +171,12 @@ export default function GuestList() {
     <div className="guest-list-page">
       <header className="gl-header">
         <h1 className="gl-title">宿泊者一覧</h1>
-        <p className="gl-sub">
-          YouTubeダッシュボード風の行レイアウトで、検索・絞り込み・編集ができます。
-        </p>
+        <p className="gl-sub">YouTubeダッシュボード風の行レイアウトで、検索・絞り込み・編集ができます。</p>
       </header>
 
-      {/* 検索ツールバー（検索のみ） */}
+      {/* 検索ツールバー */}
       <section className="gl-toolbar">
-        <div className="gl-form-grid">
+        <div className="gl-form-grid gl-form-grid--with-actions">
           <input
             type="text"
             placeholder="名前"
@@ -210,20 +206,30 @@ export default function GuestList() {
             value={q.checkOutDate}
             onChange={(e) => setQ((prev) => ({ ...prev, checkOutDate: e.target.value }))}
           />
-        </div>
 
-        {/* 検索する / クリア（横並び） */}
-        <div className="gl-search-actions">
-          <button className="btn primary btn-sm" type="button" onClick={handleSearch}>
-            検索する
+          {/* 🔍検索 / 🗑️クリア */}
+          <button
+            type="button"
+            className="btn primary btn-icon"
+            onClick={handleSearch}
+            title="検索する"
+            aria-label="検索する"
+          >
+            🔍
           </button>
-          <button className="btn ghost btn-sm" type="button" onClick={handleClear}>
-            クリア
+          <button
+            type="button"
+            className="btn ghost btn-icon"
+            onClick={handleClear}
+            title="クリア"
+            aria-label="クリア"
+          >
+            🗑️
           </button>
         </div>
       </section>
 
-      {/* フィルターバー（検索部分の外） */}
+      {/* フィルターバー */}
       <section className="gl-filterbar">
         <div className="gl-filter-row">
           <div className="gl-status-filter">
@@ -238,13 +244,12 @@ export default function GuestList() {
             </select>
           </div>
 
-          {/* 削除済みの表示制御をセレクトメニュー化 */}
+          {/* 削除済み切替 */}
           <div className="gl-deleted-filter">
             <label style={{ marginRight: 6 }}>表示：</label>
             <select
               value={showDeleted ? 'INCLUDE' : 'EXCLUDE'}
               onChange={(e) => setShowDeleted(e.target.value === 'INCLUDE')}
-              title="削除フラグのあるゲストの表示/非表示"
             >
               <option value="EXCLUDE">削除済みを非表示</option>
               <option value="INCLUDE">削除済みも表示</option>
@@ -264,9 +269,7 @@ export default function GuestList() {
       {!loading && !err && (
         <>
           <div className="yt-list">
-            {pageItems.length === 0 && (
-              <div className="gl-empty">該当する宿泊者がいません。</div>
-            )}
+            {pageItems.length === 0 && <div className="gl-empty">該当する宿泊者がいません。</div>}
 
             {pageItems.map((gd, i) => {
               const { guest, reservations = [], bookings = [] } = gd ?? {};
@@ -276,7 +279,7 @@ export default function GuestList() {
 
               return (
                 <article className="yt-row" key={guestId}>
-                  {/* 1行目：行クリックで開閉（右端ボタンはクリックしても開閉しない） */}
+                  {/* クリックで開閉 */}
                   <div
                     className={`yt-main ${isOpen ? 'expanded' : ''}`}
                     role="button"
@@ -295,33 +298,49 @@ export default function GuestList() {
                     }}
                   >
                     <div className="yt-avatar">{String(head.name || '？').charAt(0)}</div>
+
+                    {/* 左側：名前・サブ情報 */}
                     <div className="yt-texts">
-                      <div className="yt-title">{head.name}</div>
+                      <div className="yt-title-row">
+                        <div className="yt-title yt-title-name">{head.name}</div>
+                      </div>
                       <div className="yt-sub">
                         {head.kana && <span className="yt-kana">{head.kana}</span>}
                         <span className="yt-dot">・</span>
                         <span className="yt-phone">{head.phone}</span>
+                        {head.plan && (
+                          <>
+                            <span className="yt-dot">・</span>
+                            <span>{head.plan}</span>
+                          </>
+                        )}
                       </div>
                     </div>
+
+                    {/* 右端：展開ヒント */}
                     <div className="yt-expand-hint" aria-hidden="true">
                       {isOpen ? '▼ 宿泊予約を閉じる' : `▶ 宿泊予約を表示（${reservations.length}件）`}
                     </div>
 
+                    {/* 右端：宿泊者編集（予約編集のボタンと統一） */}
                     <div className="yt-actions-inline">
                       <button
-                        className="btn ghost"
+                        className="btn outline btn-sm"
                         onClick={(ev) => {
                           ev.stopPropagation();
                           setSelectedGuestDetail(gd);
                           setGuestModalOpen(true);
                         }}
+                        aria-label={`${head.name} を編集`}
+                        title="宿泊者編集"
+                        type="button"
                       >
-                        ゲスト編集
+                        宿泊者編集
                       </button>
                     </div>
                   </div>
 
-                  {/* 2行目：展開領域（予約一覧） */}
+                  {/* 展開領域：予約一覧 */}
                   {isOpen && (
                     <div className="yt-expand">
                       <div className="gl-reservations">
@@ -330,8 +349,7 @@ export default function GuestList() {
                         )}
 
                         {reservations.map((r) => {
-                          const booking =
-                            bookings.find((b) => b?.id === r?.bookingId) || null;
+                          const booking = bookings.find((b) => b?.id === r?.bookingId) || null;
                           const statusJa =
                             r?.status === 'CHECKED_IN'
                               ? 'チェックイン済み'

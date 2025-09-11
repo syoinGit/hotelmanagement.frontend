@@ -1,114 +1,157 @@
-/* コンテナ */
-.booking-list-container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  font-family: 'Segoe UI', sans-serif;
+/* =============================
+   BookingListPage.css
+   宿泊プラン一覧（GuestListPageと統一）
+   ============================= */
+
+:root {
+  --gl-bg: #f7f7f9;
+  --gl-panel: #ffffff;
+  --gl-elev: #fafafa;
+  --gl-border: #e5e7eb;
+  --gl-text: #111827;
+  --gl-text-weak: #374151;
+  --gl-text-mute: #6b7280;
+  --gl-accent: #2563eb;
+  --gl-radius: 10px;
+  --gl-shadow: 0 6px 20px rgba(0,0,0,.06);
+  --gl-font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
-.booking-list-container h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
-}
-
-/* テーブルラッパ（横スクロール保険） */
-.booking-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden; /* 角丸に合わせてはみ出し防止 */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-  font-size: 0.95rem;
+.booking-list-page {
+  color: var(--gl-text);
+  font-family: var(--gl-font);
+  background: var(--gl-bg);
+  padding: 24px clamp(16px, 3vw, 32px);
+  min-height: 100dvh;
 }
 
 /* ヘッダー */
-.booking-table thead th {
-  background: #f6f7fb;
-  color: #34495e;
-  text-align: left;
-  padding: 0.9rem 1rem;
-  border-bottom: 1px solid #e6e8ef;
-  font-weight: 600;
+.gl-header {
+  margin: 0 0 16px 0;
+}
+.gl-title {
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.25;
+  margin: 0 0 6px 0;
+  font-weight: 700;
+}
+.gl-sub {
+  margin: 0;
+  color: var(--gl-text-mute);
+  font-size: 14px;
 }
 
-/* セル */
-.booking-table tbody td {
-  padding: 0.9rem 1rem;
-  color: #444;
-  border-bottom: 1px solid #eee;
-  vertical-align: top;
+/* 件数 */
+.gl-count {
+  margin: 10px 0;
+  color: var(--gl-text-weak);
+  font-size: 13px;
 }
 
-/* 交互行 */
-.booking-table tbody tr:nth-child(odd) {
-  background: #fcfcfe;
+/* リスト全体 */
+.yt-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* プラン1件 */
+.yt-row {
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  background: var(--gl-panel);
+  box-shadow: var(--gl-shadow);
 }
 
-/* 最終行のボーダー消す */
-.booking-table tbody tr:last-child td {
-  border-bottom: none;
+/* メイン行 */
+.yt-main {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* avatar | texts | actions */
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
 }
 
-/* 価格の見栄えアップ */
-.booking-table td:nth-child(3) {
+.yt-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #eef2f7;
+  color: #374151;
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 16px;
+}
+
+.yt-texts { min-width: 0; }
+.yt-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+}
+.yt-sub {
+  margin-top: 4px;
+  color: var(--gl-text-weak);
+  font-size: 13px;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* 利用可能の○/✕を少し強調 */
-.booking-table td:last-child {
+/* 右端アクション */
+.yt-actions-inline { display: inline-flex; gap: 8px; }
+.yt-actions-inline .btn { padding: 6px 12px; font-size: 13px; }
+
+/* ボタン共通 */
+.btn {
+  appearance: none;
+  border: 1px solid var(--gl-border);
+  background: var(--gl-elev);
+  color: var(--gl-text);
+  border-radius: 999px;
+  font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .02s ease;
+}
+.btn:hover { background: #242424; color: #fff; }
+.btn:active { transform: translateY(1px); }
+
+.btn.ghost { background: transparent; }
+.btn.ghost:hover { background: #1d1d1d; color: #fff; }
+
+.btn.primary {
+  background: var(--gl-accent);
+  color: #fff;
 }
 
-/* エラーメッセージ（既存のクラス名利用） */
-.error-message {
-  color: #c0392b;
-  text-align: center;
-  margin-top: 1rem;
+/* ページャ */
+.gl-pager {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 16px;
+}
+.gl-pagebtn {
+  background: var(--gl-elev);
+  color: var(--gl-text);
+  border: 1px solid var(--gl-border);
+  border-radius: 999px;
+  padding: 8px 12px;
   font-weight: 600;
+  cursor: pointer;
 }
+.gl-pagebtn:disabled { opacity: .5; cursor: not-allowed; }
+.gl-pageinfo { color: var(--gl-text-weak); font-size: 13px; }
 
-/* スマホ対応 */
-@media (max-width: 640px) {
-  .booking-list-container {
-    padding: 1.5rem 1rem;
-  }
-  .booking-list-container h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.4rem;
-  }
-  .booking-table thead {
-    display: none; /* 小画面ではカード風に */
-  }
-  .booking-table,
-  .booking-table tbody,
-  .booking-table tr,
-  .booking-table td {
-    display: block;
-    width: 100%;
-  }
-  .booking-table tr {
-    background: #fff;
-    margin-bottom: 0.9rem;
-    border-radius: 10px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-  }
-  .booking-table td {
-    border: none;
-    border-bottom: 1px solid #eee;
-    padding: 0.8rem 1rem;
-  }
-  .booking-table td:last-child {
-    border-bottom: none;
-  }
-  /* 疑似ラベルを付ける（列名はヘッダ順に） */
-  .booking-table td:nth-child(1)::before { content: 'プラン名：'; font-weight: 700; color: #34495e; margin-right: .4rem; }
-  .booking-table td:nth-child(2)::before { content: '説明：';     font-weight: 700; color: #34495e; margin-right: .4rem; }
-  .booking-table td:nth-child(3)::before { content: '価格：';     font-weight: 700; color: #34495e; margin-right: .4rem; }
-  .booking-table td:nth-child(4)::before { content: '利用可能：'; font-weight: 700; color: #34495e; margin-right: .4rem; }
+/* エラー/空表示 */
+.gl-error, .gl-empty, .gl-state {
+  background: var(--gl-panel);
+  border: 1px solid var(--gl-border);
+  border-radius: var(--gl-radius);
+  padding: 14px;
+  box-shadow: var(--gl-shadow);
+  margin: 12px 0;
+  font-size: 14px;
+  color: var(--gl-text-mute);
 }
+.gl-error { color: #e11d48; }
