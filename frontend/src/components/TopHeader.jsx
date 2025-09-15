@@ -5,11 +5,7 @@ import { Users, Package, Search, FilePlus, PlusCircle, LogIn, LogOut, User } fro
 import axios from 'axios';
 import logoImage from '../assets/logo.png';
 import './Header.css';
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== 'undefined' && window.API_BASE) ||
-  'http://localhost:8080';
+import API_BASE from "../utils/apiBase.js";
 
 const TopHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditReservationModal.css';
+import API_BASE from "../../../utils/apiBase.js";
 
 const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -52,12 +53,12 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/reservation/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Cookie 送信必須
-        body: JSON.stringify(payload)
-      });
+  const response = await fetch(`${API_BASE}/reservation/update`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include', // Cookie 送信必須
+    body: JSON.stringify(payload),
+  });
 
       const result = await response.text();
 

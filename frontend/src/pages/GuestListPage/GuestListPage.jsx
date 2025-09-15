@@ -3,11 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
 import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
 import './GuestListPage.css';
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== 'undefined' && window.API_BASE) ||
-  'http://localhost:8080';
+import API_BASE from "../../utils/apiBase.js";
 
 const PAGE_SIZE = 20;
 

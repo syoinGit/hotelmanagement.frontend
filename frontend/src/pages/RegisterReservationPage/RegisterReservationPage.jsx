@@ -3,11 +3,7 @@ import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import RegisterModal from "../../components/Modal/RegisterModal/RegisterModal";
 import "./RegisterReservationPage.css";
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== "undefined" && window.API_BASE) ||
-  "http://localhost:8080";
+import API_BASE from "../../utils/apiBase.js";
 
 /** ひらがな/半角カナ → 全角カタカナ へ正規化し、余計な文字を除去 */
 const toKatakana = (input) => {

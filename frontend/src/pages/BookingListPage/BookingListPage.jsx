@@ -2,11 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import EditBookingModal from '../../components/Modal/EditBookingModal/EditBookingModal';
 import './BookingListPage.css';
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== 'undefined' && window.API_BASE) ||
-  'http://localhost:8080';
+import API_BASE from "../../utils/apiBase.js";
 
 const PAGE_SIZE = 20;
 

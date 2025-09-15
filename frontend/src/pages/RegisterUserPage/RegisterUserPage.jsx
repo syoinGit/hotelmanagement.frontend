@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./RegisterUserPage.css";
-
-// APIベースURL（必要なら .env で上書き可）
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== "undefined" && window.API_BASE) ||
-  "http://localhost:8080";
+import API_BASE from "../../utils/apiBase.js";
 
 function RegisterUserPage() {
   const [id, setId] = useState("");

@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import './CheckInPage.css';
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== 'undefined' && window.API_BASE) ||
-  'http://localhost:8080';
+import API_BASE from "../../utils/apiBase.js";
 
 const formatDate = (d) => (d ? new Date(d).toISOString().slice(0, 10) : '');
 const formatJPY = (n) =>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./LoginPage.css";
+import API_BASE from "../../utils/apiBase.js";
 
 const LoginPage = () => {
   const [id, setId] = useState("");
@@ -9,21 +10,22 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (loginId, loginPassword) => {
-    const params = new URLSearchParams();
-    params.append("id", loginId);
-    params.append("password", loginPassword);
-    try {
-      await axios.post("http://localhost:8080/login", params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        withCredentials: true,
-      });
-      navigate("/home");
-    } catch (err) {
-      setError("ログインに失敗しました。");
-      console.error("ログインエラー:", err);
-    }
-  };
+const handleLogin = async (loginId, loginPassword) => {
+  const params = new URLSearchParams();
+  params.append("id", loginId);
+  params.append("password", loginPassword);
+
+  try {
+    await axios.post(`${API_BASE}/login`, params, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      withCredentials: true, // Cookie保存必須
+    });
+    navigate("/home");
+  } catch (err) {
+    setError("ログインに失敗しました。");
+    console.error("ログインエラー:", err);
+  }
+};
 
   return (
     <div className="login-container">

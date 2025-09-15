@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import API_BASE from '../../../utils/apiBase';
+import API_BASE from '../../../utils/apiBase.js';
 import '../EditGuestModal/EditGuestModal.css';
 
 axios.defaults.withCredentials = true;

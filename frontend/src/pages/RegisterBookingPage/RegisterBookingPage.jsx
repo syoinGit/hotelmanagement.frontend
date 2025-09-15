@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './RegisterBookingPage.css';
+import API_BASE from "../../utils/apiBase.js";
 
 const RegisterBookingPage = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ const RegisterBookingPage = () => {
         price: formData.price.toString(),
       };
 
-      await axios.put('http://localhost:8080/registerBooking', payload);
+      await axios.put(`${API_BASE}/registerBooking`, payload);
       setMessage('✅ 宿泊プランの登録が完了しました！');
       setFormData({
         name: '',

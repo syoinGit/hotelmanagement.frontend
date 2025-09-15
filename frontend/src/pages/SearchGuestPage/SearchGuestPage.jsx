@@ -7,13 +7,9 @@ import {
 import './SearchGuestPage.css';
 import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
 import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
+import API_BASE from "../../utils/apiBase.js";
 
 axios.defaults.withCredentials = true;
-
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== 'undefined' && window.API_BASE) ||
-  'http://localhost:8080';
 
 const SearchGuestPage = () => {
   // 検索フォーム
