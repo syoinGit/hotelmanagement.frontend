@@ -36,6 +36,7 @@ const AppLayout = () => {
       <Routes>
         <Route path="/" element={<TopPage />} />
         <Route path="/login" element={<LoginPage />} />
+   <Route path="/register-user" element={<RegisterUserPage />} />
 
         {/* /home 以下をネスト */}
         <Route
@@ -44,6 +45,7 @@ const AppLayout = () => {
             <RequireAuth>
               <Home />
             </RequireAuth>
+            
           }
         >
           <Route index element={<DashboardLanding />} />
@@ -54,7 +56,7 @@ const AppLayout = () => {
           <Route path="register-booking" element={<RegisterBookingPage />} />
           <Route path="check-in" element={<CheckInPage />} />
           <Route path="check-out" element={<CheckOutPage />} />
-          <Route path="user" element={<RegisterUserPage />} />
+    
         </Route>
 
         {/* 旧パス → /home 配下へリダイレクト */}
@@ -65,7 +67,6 @@ const AppLayout = () => {
         <Route path="/register-booking" element={<Navigate to="/home/register-booking" replace />} />
         <Route path="/check-in" element={<Navigate to="/home/check-in" replace />} />
         <Route path="/check-out" element={<Navigate to="/home/check-out" replace />} />
-        <Route path="/register-user" element={<Navigate to="/home/user" replace />} />
       </Routes>
 
       {showHomeButton && <HomeButton />}

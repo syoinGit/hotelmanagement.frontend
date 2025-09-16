@@ -57,7 +57,6 @@ export default function BookingListPage() {
     <div className="booking-list-page">
       <header className="gl-header">
         <h1 className="gl-title">宿泊プラン一覧</h1>
-        <p className="gl-sub">YouTubeダッシュボード風レイアウトで、一覧・編集ができます。</p>
       </header>
 
       {/* 削除済みの表示切替 */}

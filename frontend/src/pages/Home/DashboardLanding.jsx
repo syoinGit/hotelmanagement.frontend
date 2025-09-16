@@ -53,13 +53,7 @@ const DashboardLanding = () => {
 
   return (
     <div className="dashboard-landing">
-      {/* 見出し */}
-      <header className="dash-header">
-        {/* FaHotel アイコンを削除し、宿泊者ページと同じ見出しフォントに */}
-        <h1 className="dash-title">ダッシュボード</h1>
-        <p className="sub-text">本日の宿泊状況と最新のステータスを確認・編集できます。</p>
-      </header>
-
+      
       {/* KPI カード */}
       <section className="kpi-section" aria-label="本日の概況">
         <div className="kpi-card">

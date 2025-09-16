@@ -167,7 +167,6 @@ export default function GuestList() {
     <div className="guest-list-page">
       <header className="gl-header">
         <h1 className="gl-title">宿泊者一覧</h1>
-        <p className="gl-sub">YouTubeダッシュボード風の行レイアウトで、検索・絞り込み・編集ができます。</p>
       </header>
 
       {/* 検索ツールバー */}
