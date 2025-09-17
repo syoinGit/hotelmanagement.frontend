@@ -1,104 +1,121 @@
-/* ===== プラン登録ページ専用 ===== */
-.register-booking-page {
-  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* タイトル */
-.register-booking-page .page-title {
-  text-align: center;
-  margin: 26px 0 20px;
-  font-size: 2rem;
-  font-weight: 760;
-  letter-spacing: .02em;
-  color: #2c3e50;
-}
-
-/* フォーム */
-.register-booking-page .booking-form {
-  background: #fff;
-  padding: 1.6rem;
-  margin: 0 auto 2rem;
-  max-width: 720px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.06);
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+/* ===== Base (BookingListPageと同トーン) ===== */
+.rbp {
+  font-family: 'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;
+  padding: 20px 18px 40px;
+  background: #f5f7fb;
+  color: #1f2937;
+  min-height: 100%;
   box-sizing: border-box;
 }
 
-.register-booking-page .booking-form label {
+/* Header */
+.rbp-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 4px 0 12px;
+}
+.rbp-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  color: #0f172a;
+  text-align: left;
+}
+
+/* Card (フォーム枠) */
+.rbp-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(15,23,42,.06);
+  padding: 18px 20px;
+  max-width: 720px;
+  margin: 0 auto 24px;
+  box-sizing: border-box;
+}
+
+/* Form */
+.rbp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.rbp-form label {
   display: flex;
   flex-direction: column;
   font-weight: 600;
-  font-size: .95rem;
+  font-size: 14px;
   color: #374151;
 }
-
-.register-booking-page .booking-form input,
-.register-booking-page .booking-form textarea {
+.rbp-form input,
+.rbp-form textarea {
   margin-top: .4rem;
   padding: 10px 12px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
-  font-size: .95rem;
+  font-size: 14px;
   background: #f9fafb;
-  transition: border-color .15s ease, box-shadow .15s ease;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
-
-.register-booking-page .booking-form input:focus,
-.register-booking-page .booking-form textarea:focus {
+.rbp-form input:focus,
+.rbp-form textarea:focus {
   border-color: #6aa7ff;
   box-shadow: 0 0 0 3px rgba(106,167,255,.18);
   outline: none;
   background: #fff;
 }
-
-.register-booking-page .booking-form textarea {
+.rbp-form textarea {
   resize: vertical;
   min-height: 90px;
 }
 
-/* チェックボックス */
-.register-booking-page .checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: .95rem;
-}
-
-/* ボタン */
-.register-booking-page .form-actions {
+/* Actions */
+.rbp-actions {
   margin-top: 1rem;
+  display: flex;
+  justify-content: flex-start;
 }
 
-.register-booking-page .primary {
+/* Buttons */
+.btn {
   height: 42px;
   padding: 0 18px;
-  font-size: .95rem;
-  background-color: #6366f1;
-  color: #fff;
-  border: none;
   border-radius: 10px;
-  cursor: pointer;
   font-weight: 700;
-  transition: background-color .2s ease, transform .03s ease;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #374151;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .03s ease;
 }
-.register-booking-page .primary:hover { background: #4f46e5; }
-.register-booking-page .primary:active { transform: translateY(1px); }
+.btn:hover { background: #f3f4f6; }
+.btn:active { transform: translateY(1px); }
+
+.btn.primary {
+  background: #6366f1;
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 18px rgba(99,102,241,.20);
+}
+.btn.primary:hover { background: #4f46e5; }
 
 /* メッセージ */
-.register-booking-page .form-message {
+.rbp-message {
   margin-top: 1rem;
   font-weight: 600;
   text-align: center;
-  font-size: .95rem;
-  color: #007a00;
+  font-size: 14px;
+  color: #065f46;
 }
 
-/* モバイル対応 */
+/* Responsive */
 @media (max-width: 640px) {
-  .register-booking-page .booking-form {
+  .rbp-card {
     padding: 1.2rem;
   }
 }

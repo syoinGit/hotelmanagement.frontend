@@ -1,158 +1,150 @@
-/* ===== 予約登録ページ専用 ===== */
-.register-reservation-page {
-  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* タイトル：検索ページと同じサイズ/トーン */
-.register-reservation-page .page-title {
-  text-align: center;
-  margin: 26px 0 16px;
-  font-size: 2rem;
-  font-weight: 760;
-  letter-spacing: .02em;
-  color: #2c3e50;
-}
-
-/* フォーム：検索ページに寄せる */
-.register-reservation-page .search-form {
-  background: #fff;
-  padding: 1.4rem;
-  margin: 1.6rem auto 2rem;
-  max-width: 960px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.06);
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+/* ===== Base (BookingListPageと同トーン) ===== */
+.rrp {
+  font-family: 'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;
+  padding: 20px 18px 40px;
+  background: #f5f7fb;
+  color: #1f2937;
+  min-height: 100%;
   box-sizing: border-box;
 }
 
-.register-reservation-page .form-row {
+/* Header */
+.rrp-header {
   display: flex;
+  align-items: center;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 0.9rem;
   justify-content: space-between;
+  margin: 4px 0 12px;
+}
+.rrp-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  color: #0f172a;
+  text-align: left; /* 左端固定 */
 }
 
-.register-reservation-page .form-row input,
-.register-reservation-page .form-row select {
-  flex: 1 1 240px;
-  min-width: 200px;
+/* Card */
+.rrp-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(15,23,42,.06);
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+/* Search form */
+.rrp-search { margin-bottom: 18px; }
+.rrp-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 12px;
+}
+.rrp-row input {
   height: 42px;
   padding: 0 12px;
+  font-size: 14px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #f9fafb;
-  font-size: .95rem;
   transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-  box-sizing: border-box;
 }
-
-.register-reservation-page .form-row input:focus,
-.register-reservation-page .form-row select:focus {
+.rrp-row input:focus {
+  outline: none;
   border-color: #6aa7ff;
   box-shadow: 0 0 0 3px rgba(106,167,255,.18);
   background: #fff;
-  outline: none;
 }
-
-/* アクション */
-.register-reservation-page .form-actions { align-items: center; }
-
-.register-reservation-page .search-button {
-  height: 42px;
-  padding: 0 18px;
-  font-size: .95rem;
-  background-color: #6366f1;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  align-self: flex-start;
-  transition: background-color .2s ease, transform .03s ease;
-}
-.register-reservation-page .search-button:hover { background: #4f46e5; }
-.register-reservation-page .search-button:active { transform: translateY(1px); }
-
-/* === 検索結果（完全一致） === */
-.register-reservation-page .match-result {
-  max-width: 960px;
-  margin: 0 auto 2rem;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-
-.register-reservation-page .match-info {
-  margin: 0 0 1rem;
-  color: #4b5563;
-  font-size: .95rem;
-}
-
-/* 結果カード */
-.register-reservation-page .match-card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-  padding: 1.4rem;
-}
-
-.register-reservation-page .match-card__title {
-  font-weight: 700;
-  color: #34495e;
-  margin-bottom: .6rem;
-  font-size: 1.02rem;
-}
-
-.register-reservation-page .match-card > div {
-  margin: .25rem 0;
-  color: #333;
-  font-size: .95rem;
-}
-
-/* アクションボタン */
-.register-reservation-page .match-card__actions {
+.rrp-actions {
   display: flex;
-  gap: .75rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
+  justify-content: flex-start;
+  margin-top: 10px;
 }
 
-.register-reservation-page .match-card__actions button {
+/* Result */
+.rrp-result { max-width: 960px; margin: 0 auto; }
+.rrp-info {
+  margin: 0 0 10px;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.rrp-match__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.rrp-match__title {
+  font-weight: 800;
+  color: #111827;
+  font-size: 16px;
+}
+
+.rrp-match__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 6px;
+  color: #374151;
+  font-size: 14px;
+}
+.rrp-match__grid .label { color: #6b7280; }
+
+.rrp-match__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.rrp-match__actions.only {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Buttons (統一トーン) */
+.btn {
   height: 42px;
   padding: 0 16px;
   border-radius: 10px;
-  border: 1px solid #d1d5db;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
   background: #fff;
   color: #374151;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: .95rem;
-  transition: background .15s ease, border-color .15s ease, transform .03s ease;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .03s ease;
 }
+.btn:hover { background: #f3f4f6; }
+.btn:active { transform: translateY(1px); }
 
-.register-reservation-page .match-card__actions button:hover {
-  background: #f3f4f6;
-  border-color: #c7ccd5;
-}
-
-.register-reservation-page .match-card__actions button:active {
-  transform: translateY(1px);
-}
-
-/* プライマリ強調 */
-.register-reservation-page .match-card__actions .primary {
+.btn.primary {
   background: #6366f1;
   color: #fff;
   border-color: transparent;
   box-shadow: 0 8px 18px rgba(99,102,241,.20);
 }
-.register-reservation-page .match-card__actions .primary:hover {
-  background: #4f46e5;
+.btn.primary:hover { background: #4f46e5; }
+
+.btn.ghost {
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
 }
 
-/* モバイル */
-@media (max-width: 640px) {
-  .register-reservation-page .search-form { padding: 1rem; }
-  .register-reservation-page .form-row input { flex-basis: 100%; min-width: 100%; }
+/* Responsive */
+@media (max-width: 840px) {
+  .rrp-row { grid-template-columns: 1fr; }
 }

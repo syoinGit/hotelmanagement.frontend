@@ -3,12 +3,12 @@ import axios from 'axios';
 import './RegisterBookingPage.css';
 import API_BASE from "../../utils/apiBase.js";
 
-const RegisterBookingPage = () => {
+export default function RegisterBookingPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    isAvailable: true, // ← UIは消したが値はtrueで送る
+    isAvailable: true, // ← UIは出さないけど常にtrue送信
   });
 
   const [message, setMessage] = useState('');
@@ -26,8 +26,7 @@ const RegisterBookingPage = () => {
     try {
       const payload = {
         ...formData,
-        // BigDecimal対応：stringで送信
-        price: formData.price.toString(),
+        price: formData.price.toString(), // BigDecimal対策
       };
 
       await axios.put(`${API_BASE}/registerBooking`, payload);
@@ -36,7 +35,7 @@ const RegisterBookingPage = () => {
         name: '',
         description: '',
         price: '',
-        isAvailable: true, // 送信後も既定はtrueのまま
+        isAvailable: true,
       });
     } catch (error) {
       console.error('登録エラー:', error);
@@ -45,10 +44,12 @@ const RegisterBookingPage = () => {
   };
 
   return (
-    <div className="register-booking-page">
-      <h1 className="page-title">宿泊プラン登録</h1>
+    <div className="rbp">
+      <header className="rbp-header">
+        <h1 className="rbp-title">宿泊プラン登録</h1>
+      </header>
 
-      <form className="booking-form" onSubmit={handleSubmit}>
+      <form className="rbp-card rbp-form" onSubmit={handleSubmit}>
         <label>
           プラン名（必須）
           <input
@@ -79,15 +80,13 @@ const RegisterBookingPage = () => {
             required
           />
         </label>
-        
-        <div className="form-actions">
-          <button type="submit" className="primary">登録</button>
+
+        <div className="rbp-actions">
+          <button type="submit" className="btn primary">登録</button>
         </div>
       </form>
 
-      {message && <p className="form-message">{message}</p>}
+      {message && <p className="rbp-message">{message}</p>}
     </div>
   );
-};
-
-export default RegisterBookingPage;
+}
