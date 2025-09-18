@@ -23,6 +23,9 @@ export default function RegisterReservationPage() {
   // 入力フォーム
   const [form, setForm] = useState({ name: "", kanaName: "", phone: "" });
 
+  // --- 追加: 日本語IMEの変換中フラグ ---
+  const [isComposing, setIsComposing] = useState(false);
+
   // 検索状態
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -36,12 +39,36 @@ export default function RegisterReservationPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // フリガナは強制カタカナ
+
     if (name === "kanaName") {
-      setForm((prev) => ({ ...prev, kanaName: toKatakana(value) }));
+      // 変換中はそのまま保持、確定後はカタカナ化
+      setForm((prev) => ({
+        ...prev,
+        kanaName: isComposing ? value : toKatakana(value),
+      }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
+  };
+
+  // --- 追加: 変換開始/終了での制御 ---
+  const handleKanaCompositionStart = () => setIsComposing(true);
+  const handleKanaCompositionEnd = (e) => {
+    setIsComposing(false);
+    // 確定時に強制カタカナ化して反映（確実に最終状態を正規化）
+    setForm((prev) => ({ ...prev, kanaName: toKatakana(e.target.value) }));
+  };
+
+  // --- 追加: フィールドから外れた時もガード ---
+  const handleKanaBlur = () =>
+    setForm((prev) => ({ ...prev, kanaName: toKatakana(prev.kanaName) }));
+
+  // --- 追加: 貼り付け時も正規化 ---
+  const handleKanaPaste = (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData("text");
+    const katakana = toKatakana(text);
+    setForm((prev) => ({ ...prev, kanaName: katakana }));
   };
 
   const handleSearch = async () => {
@@ -53,6 +80,12 @@ export default function RegisterReservationPage() {
       return;
     }
 
+    // --- 念のため送信前に最終正規化（多重ガード） ---
+    const payload = {
+      ...form,
+      kanaName: toKatakana(form.kanaName),
+    };
+
     setSearched(false);
     setMatchedGuest(null);
     setInfo("");
@@ -60,7 +93,7 @@ export default function RegisterReservationPage() {
 
     try {
       const url = `${API_BASE}/guest/match`;
-      const res = await axios.post(url, form, { withCredentials: true });
+      const res = await axios.post(url, payload, { withCredentials: true });
       const guest = res?.data?.guest ?? null;
 
       if (guest && guest.id) {
@@ -92,9 +125,9 @@ export default function RegisterReservationPage() {
       selectedMode === "existing" && matchedGuest
         ? matchedGuest // 既存：そのまま（id等保持）
         : {
-            // 新規：フォームの値で初期化
+            // 新規：フォームの値で初期化（念のため正規化）
             name: form.name.trim(),
-            kanaName: form.kanaName.trim(),
+            kanaName: toKatakana(form.kanaName.trim()),
             phone: form.phone.trim(),
           };
     setModalGuest(g);
@@ -119,15 +152,21 @@ export default function RegisterReservationPage() {
             onChange={handleChange}
             autoComplete="off"
           />
+
           <input
             type="text"
             name="kanaName"
             placeholder="フリガナ（全角カタカナ・完全一致）"
             value={form.kanaName}
             onChange={handleChange}
+            onCompositionStart={handleKanaCompositionStart}
+            onCompositionEnd={handleKanaCompositionEnd}
+            onBlur={handleKanaBlur}
+            onPaste={handleKanaPaste}
             inputMode="kana"
             autoComplete="off"
           />
+
           <input
             type="text"
             name="phone"

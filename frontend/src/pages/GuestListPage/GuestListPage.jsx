@@ -4,6 +4,7 @@ import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal
 import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
 import './GuestListPage.css';
 import API_BASE from "../../utils/apiBase.js";
+import { toKatakana, useKanaHandlers } from "../../utils/textUtils.js";
 
 const PAGE_SIZE = 20;
 
@@ -21,6 +22,10 @@ export default function GuestList() {
     checkInDate: '',
     checkOutDate: '',
   });
+
+  // kanaName専用ハンドラ（共通ユーティリティ）
+  const setKanaQuery = (next) => setQ((prev) => ({ ...prev, kanaName: next }));
+  const kana = useKanaHandlers(q.kanaName, setKanaQuery);
 
   // 削除済み表示
   const [showDeleted, setShowDeleted] = useState(false);
@@ -77,15 +82,24 @@ export default function GuestList() {
     try {
       setLoading(true);
       setErr('');
+
+      // 送信前にフリガナを最終正規化（多重ガード）
+      const payload = { 
+        ...q,
+        kanaName: toKatakana(q.kanaName),
+        showDeleted
+      };
+
       const url = canSearch ? `${API_BASE}/guest/search` : `${API_BASE}/guests`;
       const opt = canSearch
         ? {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...q, showDeleted }),
+            body: JSON.stringify(payload),
           }
         : { credentials: 'include' };
+
       const res = await fetch(url, opt);
       const data = await res.json();
       setGuests(Array.isArray(data) ? data : []);
@@ -152,7 +166,11 @@ export default function GuestList() {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...q, showDeleted }),
+            body: JSON.stringify({ 
+              ...q, 
+              kanaName: toKatakana(q.kanaName), // 念のため正規化
+              showDeleted 
+            }),
           }
         : { credentials: 'include' };
       const res = await fetch(url, opt);
@@ -181,8 +199,7 @@ export default function GuestList() {
           <input
             type="text"
             placeholder="フリガナ"
-            value={q.kanaName}
-            onChange={(e) => setQ((prev) => ({ ...prev, kanaName: e.target.value }))}
+            {...kana}
           />
           <input
             type="text"
