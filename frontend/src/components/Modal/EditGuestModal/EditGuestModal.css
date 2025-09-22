@@ -116,3 +116,22 @@
   }
   .form-label { margin-top: .4rem; }
 }
+
+/* EditGuestModal.css など共通CSSに追記 */
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.form-input[type="text"],
+.form-input[type="email"],
+.form-input[type="number"],
+textarea.form-input {
+  display: block;
+}
+
+textarea.form-input {
+  resize: vertical; /* 必要なら手動で高さ調整可能 */
+  min-height: 80px; /* 見やすい初期高さ */
+}
