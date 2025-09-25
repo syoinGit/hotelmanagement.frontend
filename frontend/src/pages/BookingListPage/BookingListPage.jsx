@@ -39,11 +39,11 @@ export default function BookingListPage() {
     }
   };
 
-  // 削除済みフィルタ
-  const visible = useMemo(() => {
-    if (showDeleted) return bookings;
-    return (bookings ?? []).filter((b) => !b.deleted);
-  }, [bookings, showDeleted]);
+ const visible = useMemo(() => {
+  if (showDeleted) return bookings;
+  // 利用可能なものだけ表示
+  return (bookings ?? []).filter((b) => b.isAvailable !== false);
+}, [bookings, showDeleted]);
 
   // ページング
   const total = visible.length;

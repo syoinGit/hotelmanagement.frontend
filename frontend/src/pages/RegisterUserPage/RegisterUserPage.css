@@ -1,133 +1,62 @@
-/* 背景（淡いグラデ） */
+/* 画面いっぱいの背景。上に余白をしっかり確保してから横センター */
 .register-page-bg {
-  min-height: 100vh;
-  padding: 6vh 4vw;
-  background: radial-gradient(1200px 800px at 50% 0%, #eef2ff 0%, #f7f7fb 40%, #fafbff 100%);
-  display: grid;
-  place-items: start center; /* 上寄せ中央配置（微妙に上に） */
-}
-
-/* カード */
-.register-card {
-  width: min(520px, 92vw);
-  margin-top: 5vh;
-  padding: 2.4rem 2rem;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 14px 40px rgba(20, 25, 40, 0.12);
-  text-align: center;
   box-sizing: border-box;
-}
+  width: 100%;
+  min-height: 100svh;                 /* モバイルUI込みの実表示高 */
+  /* 固定ヘッダー/ノッチを考慮した上部パディング：
+     48px をベース、画面高の 10% まで伸び、最大 128px。
+     さらに safe-area と（あれば）アプリのヘッダー変数を加算。 */
+  --header-height: var(--app-header-height, 0px);
+  padding-top: calc(
+    clamp(48px, 10vh, 128px) + env(safe-area-inset-top, 0px) + var(--header-height)
+  );
+  padding-right: 24px;
+  padding-bottom: 24px;
+  padding-left: 24px;
 
-/* タイトル */
-.register-title {
-  margin: 0 0 1.6rem;
-  font-size: 1.9rem;
-  font-weight: 800;
-  color: #1f2937;
-  letter-spacing: 0.02em;
-}
-
-/* フォーム */
-.register-form {
   display: flex;
-  flex-direction: column;
-  align-items: center; /* 入力群を中央に */
-  gap: 1rem;
+  align-items: flex-start;            /* ← 縦は上基準にして重なりを避ける */
+  justify-content: center;            /* 横は中央 */
+  background:
+    radial-gradient(60% 60% at 10% 10%, rgba(99,102,241,.08), transparent 60%),
+    radial-gradient(50% 50% at 90% 20%, rgba(56,189,248,.08), transparent 60%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
 }
 
-/* ラベル + 入力を縦に並べる */
-.form-row {
+/* カード本体（横は中央・上の余白に乗る） */
+.register-card {
+  box-sizing: border-box;
   width: 100%;
-  max-width: 380px;      /* 入力幅を中央に固定 */
-  text-align: left;      /* ラベルは読みやすく左寄せ */
-}
-
-/* ラベル */
-.form-label {
-  display: block;
-  margin: 0 0 0.35rem;
-  font-size: 0.95rem;
-  color: #4b5563;
-  font-weight: 700;
-}
-
-/* 入力 */
-.form-input {
-  width: 100%;
-  height: 46px;
-  padding: 0 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #f9fafb;
-  font-size: 1rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-  outline: none;
-}
-
-.form-input:focus {
-  border-color: #6aa7ff;
-  box-shadow: 0 0 0 3px rgba(106, 167, 255, 0.18);
+  max-width: 520px;
+  margin: 0 auto;                     /* 横センターの保険 */
   background: #fff;
+  border-radius: 14px;
+  padding: 28px 24px;
+  box-shadow:
+    0 10px 24px rgba(15,23,42,.10),
+    0 2px 6px rgba(15,23,42,.06);
 }
 
-/* 送信エリア（ボタン中央） */
-.submit-area {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 0.5rem;
-}
+/* 以下は前回のまま（必要部分のみ再掲） */
+.register-title { margin: 0 0 18px; text-align: center; font-size: 24px; font-weight: 700; color:#111827; }
+.register-form { margin: 8px 0 12px; }
+.form-row { margin-bottom: 14px; }
+.form-label { display:block; font-size:13px; color:#374151; margin-bottom:6px; }
+.form-input { width:100%; box-sizing:border-box; padding:12px 14px; border:1px solid #e5e7eb; border-radius:10px; font-size:14px; }
+.form-input:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,.25); }
 
-/* ボタン */
-.btn {
-  height: 46px;
-  padding: 0 1rem;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: transform 0.04s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s;
-}
+.btn { border:0; border-radius:10px; padding:12px 14px; font-weight:600; font-size:14px; cursor:pointer; }
+.btn.primary { width:100%; background:#a5b4fc; color:#111827; }
+.btn.primary:disabled { opacity:.6; cursor:not-allowed; }
+.btn.ghost { background:#fff; border:1px solid #e5e7eb; color:#111827; }
+.btn.full { width:100%; }
 
-.btn:active {
-  transform: translateY(1px);
-}
+.message { margin-top:12px; text-align:center; font-size:14px; }
+.message.success { color:#16a34a; }
+.message.error { color:#dc2626; }
 
-.btn.primary {
-  width: min(380px, 100%);
-  background: #4a7dff;
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(74, 125, 255, 0.28);
-}
-.btn.primary:hover { background: #3e70f2; }
-.btn.primary:disabled {
-  background: #a7b9f7;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* メッセージ */
-.message {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-.message.success { color: #0b905b; }
-.message.error   { color: #d32f2f; }
-
-/* スモールスクリーン */
+/* モバイル */
 @media (max-width: 480px) {
-  .register-card {
-    margin-top: 2vh;
-    padding: 1.6rem 1rem;
-  }
-  .register-title {
-    font-size: 1.6rem;
-    margin-bottom: 1.1rem;
-  }
-  .form-row {
-    max-width: 100%;
-  }
+  .register-card { padding: 22px 16px; border-radius: 12px; max-width: 92%; }
+  .register-title { font-size: 20px; }
 }

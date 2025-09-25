@@ -1,5 +1,7 @@
+// src/pages/RegisterUserPage/RegisterUserPage.jsx
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";  // ← 追加
 import "./RegisterUserPage.css";
 import API_BASE from "../../utils/apiBase.js";
 
@@ -8,6 +10,8 @@ function RegisterUserPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState({ text: "", type: "" }); // type: "success" | "error"
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate(); // ← 追加
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,10 +25,14 @@ function RegisterUserPage() {
         { id, password },
         { withCredentials: true }
       );
-      // サーバからの ResponseEntity<String> の本文をそのまま表示
       setMessage({ text: res?.data ?? "登録しました。", type: "success" });
       setId("");
       setPassword("");
+
+      // ✅ 登録後にログインページに戻る
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000); // 1秒だけ成功メッセージを見せる
     } catch (err) {
       console.error("register error:", err);
       setMessage({ text: "ユーザー登録に失敗しました", type: "error" });
@@ -90,6 +98,16 @@ function RegisterUserPage() {
             {message.text}
           </p>
         )}
+
+        {/* ✅ ログイン画面に戻るボタン */}
+        <div className="back-to-login">
+          <button
+            className="btn ghost"
+            onClick={() => navigate("/login")}
+          >
+            ログイン画面に戻る
+          </button>
+        </div>
       </div>
     </div>
   );
