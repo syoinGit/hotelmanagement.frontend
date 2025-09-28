@@ -147,7 +147,7 @@ export default function RegisterReservationPage() {
           <input
             type="text"
             name="name"
-            placeholder="名前（完全一致）"
+            placeholder="名前"
             value={form.name}
             onChange={handleChange}
             autoComplete="off"
@@ -156,7 +156,7 @@ export default function RegisterReservationPage() {
           <input
             type="text"
             name="kanaName"
-            placeholder="フリガナ（全角カタカナ・完全一致）"
+            placeholder="フリガナ"
             value={form.kanaName}
             onChange={handleChange}
             onCompositionStart={handleKanaCompositionStart}
@@ -170,7 +170,7 @@ export default function RegisterReservationPage() {
           <input
             type="text"
             name="phone"
-            placeholder="電話番号（完全一致）"
+            placeholder="電話番号"
             value={form.phone}
             onChange={handleChange}
             inputMode="numeric"
