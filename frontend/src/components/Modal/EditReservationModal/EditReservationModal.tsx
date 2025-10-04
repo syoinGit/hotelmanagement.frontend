@@ -1,25 +1,17 @@
-// src/components/Modal/EditReservationModal/EditReservationModal.jsx
 import React, { useState, useEffect } from 'react';
 import './EditReservationModal.css';
 import API_BASE from "../../../utils/apiBase.js";
+import Reservation from "../../../models/Reservation.js"
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const isUuid = (v) => UUID_RE.test(String(v || '').trim());
+type Props = {
+reservation?: Reservation;
+onClose: () => void;
+onUpdate: () => void;
+}
 
-const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
-  const [formData, setFormData] = useState({
-    id: '',
-    guestId: '',
-    bookingId: '',
-    checkInDate: '',
-    checkOutDate: '',
-    stayDays: '',
-    totalPrice: '',
-    status: 'NOT_CHECKED_IN',
-    memo: '',
-    createdAt: '',
-    userId: ''
+const EditReservationModal: React.FC<Props> = ({ reservation, onClose, onUpdate }) => {
+  const [formData, setFormData] = useState<Reservation>(reservation || new Reservation());
+
   });
 
   // 画面用：プラン選択候補（name と id のマッピング用）
@@ -36,7 +28,6 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
         const data = await res.json();
         setBookings(Array.isArray(data) ? data : []);
       } catch (e) {
-        // 失敗しても致命傷ではない（すでに bookingId が入っていればOK）
         console.warn('Failed to load bookings', e);
         setBookings([]);
       }
@@ -48,9 +39,8 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
       setFormData({
         id: reservation.id ?? '',
         guestId: reservation.guestId ?? '',
-        bookingId: reservation.bookingId ?? reservation.booking ?? '', // ← 万一 name が入ってきても保持
+        bookingId: reservation.bookingId ?? reservation.booking ?? '',
         checkInDate: formatDate(reservation.checkInDate),
-        checkOutDate: formatDate(reservation.checkOutDate),
         stayDays: reservation.stayDays ?? '',
         totalPrice: reservation.totalPrice ?? '',
         status: reservation.status || 'NOT_CHECKED_IN',
@@ -62,46 +52,36 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
   }, [reservation]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'number' ? (value === '' ? '' : Number(value)) : value
+    }));
   };
 
   // name や表示文字列が入ってきた場合に UUID に変換
   const ensureBookingUuid = (raw) => {
     if (isUuid(raw)) return raw;
     if (!raw) return '';
-    // 名前一致で検索（完全一致）: 必要なら trim や大文字小文字無視等に拡張可
     const hit = bookings.find(b => b?.id && (b?.name === raw));
-    return hit?.id || raw; // 見つからなければそのまま返す（サーバで再度バリデーション）
+    return hit?.id || raw;
   };
 
   const handleSubmit = async () => {
-    // 送信前変換
     const normalizedBookingId = ensureBookingUuid(formData.bookingId);
 
-    // id が空 or UUID でないなら新規想定で id は送らない
-    const payloadBase = {
+    const payload = {
       ...formData,
       bookingId: normalizedBookingId,
       stayDays: formData.stayDays === '' ? null : Number(formData.stayDays),
-      // totalPrice が BigDecimal の場合は string で送りたいなら下の行を String() に変更
       totalPrice: formData.totalPrice === '' ? null : Number(formData.totalPrice),
     };
 
-    // サーバ実装に合わせて：更新は PUT /reservation/update、新規は POST /reservation/register など
-    const isUpdate = isUuid(formData.id);
-
-    // 送信 payload を最終調整
-    const payload = { ...payloadBase };
-    if (!isUpdate) {
-      delete payload.id; // 新規時は id を送らない（サーバで UUID 採番）
-    }
-
     try {
-      const url = isUpdate
-        ? `${API_BASE}/reservation/update`
-        : `${API_BASE}/reservation/register`;
-      const method = isUpdate ? 'PUT' : 'POST';
+      const url = `${API_BASE}/reservation/update`;
+      const method = 'PUT';
+
+      console.log("送信payload:", payload);
 
       const response = await fetch(url, {
         method,
@@ -113,12 +93,12 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
       const resultText = await response.text();
       if (!response.ok) {
         console.error("⚠️ サーバーレスポンス:", resultText);
-        alert("更新/登録に失敗しました：" + resultText);
+        alert("更新に失敗しました：" + resultText);
         return;
       }
 
-      alert(resultText || (isUpdate ? '更新しました' : '登録しました'));
-      onUpdate && onUpdate();
+      alert(resultText || '更新しました');
+      onUpdate?.();
       onClose();
     } catch (err) {
       console.error('❌ ネットワークエラー:', err);
@@ -129,9 +109,8 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h3>{isUuid(formData.id) ? '予約情報を編集' : '予約を新規登録'}</h3>
-        <form>
-          {/* プラン選択：value には必ず UUID を入れる */}
+        <h3>予約情報を編集</h3>
+        <div className="modal-form">
           <label>
             宿泊プラン：
             <select
@@ -151,10 +130,6 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
           <label>
             チェックイン日：
             <input type="date" name="checkInDate" value={formData.checkInDate} onChange={handleChange} />
-          </label>
-          <label>
-            チェックアウト日：
-            <input type="date" name="checkOutDate" value={formData.checkOutDate} onChange={handleChange} />
           </label>
           <label>
             宿泊日数：
@@ -178,10 +153,10 @@ const EditReservationModal = ({ reservation, onClose, onUpdate }) => {
             メモ：
             <textarea name="memo" value={formData.memo} onChange={handleChange} />
           </label>
-        </form>
+        </div>
         <div className="modal-buttons">
-          <button onClick={handleSubmit}>保存</button>
-          <button onClick={onClose}>キャンセル</button>
+          <button type="button" onClick={handleSubmit}>保存</button>
+          <button type="button" onClick={onClose}>キャンセル</button>
         </div>
       </div>
     </div>

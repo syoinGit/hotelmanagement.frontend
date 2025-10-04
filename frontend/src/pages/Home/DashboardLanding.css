@@ -160,6 +160,11 @@
   color: #b91c1c;                        /* red-700 */
 }
 
+.late-badge {
+  white-space: nowrap;   /* 改行させない */
+  display: inline-block; /* テキストを横に並べる */
+}
+
 .stay-actions {
   display: grid;
   gap: 8px;
