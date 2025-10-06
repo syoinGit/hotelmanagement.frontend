@@ -2,26 +2,31 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { FaUser, FaBed, FaCalendarAlt } from 'react-icons/fa';
 import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
-import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
+import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal.tsx';
 import './DashboardLanding.css';
-import API_BASE from "../../utils/apiBase.js";
+import API_BASE from '../../utils/apiBase.js';
 
-// ===== 日付ユーティリティ（JSTベースの素朴実装） =====
+/* =========================
+   日付ユーティリティ（JSTベースの素朴実装）
+   ========================= */
 const toDate = (d) => {
-  // 受け取りが 'YYYY-MM-DD' ならローカル解釈のズレ防止で明示T00:00
+  // 'YYYY-MM-DD' はローカル解釈のズレ防止で T00:00 固定
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) return new Date(`${d}T00:00:00`);
   return new Date(d);
 };
+
 const addDays = (date, days) => {
   const dt = new Date(date.getTime());
   dt.setDate(dt.getDate() + days);
   return dt;
 };
-// 今日(0時)を基準に「過ぎているか」を見る
+
+// 今日(0時)で切る
 const startOfToday = () => {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 };
+
 const fmt = (date) => {
   if (!date || isNaN(date)) return '—';
   const y = date.getFullYear();
@@ -30,16 +35,15 @@ const fmt = (date) => {
   return `${y}-${m}-${d}`;
 };
 
+// レイト判定：チェックイン＋泊数(=予定アウト)が今日0時より前、かつ既にOUT/CANCELでない
 const isReservationLate = (r) => {
   if (!r) return false;
-  // 予定チェックアウト = チェックイン + 泊数
   const ci = toDate(r.checkInDate);
   if (isNaN(ci)) return false;
   const plannedOut = addDays(ci, Number(r.stayDays ?? 0));
   const today0 = startOfToday();
-
   const isAlreadyOut = r.status === 'CHECKED_OUT' || r.status === 'CANCELLED';
-  return !isAlreadyOut && plannedOut < today0; // 今日0時時点で過ぎていたらレイト
+  return !isAlreadyOut && plannedOut < today0;
 };
 
 const plannedCheckoutDate = (r) => {
@@ -59,21 +63,24 @@ const DashboardLanding = () => {
   const [selectedGuestDetail, setSelectedGuestDetail] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
-  // API呼び出し
+  /* =========================
+     API 呼び出し
+     ========================= */
   const fetchStayGuests = async () => {
     const res = await axios.get(`${API_BASE}/guests/stay`, { withCredentials: true });
     return res.data ?? [];
   };
+
   const fetchCheckInToday = async () => {
     const res = await axios.get(`${API_BASE}/guests/check-in-today`, { withCredentials: true });
     return res.data ?? [];
   };
+
   const fetchCheckOutToday = async () => {
     const res = await axios.get(`${API_BASE}/guests/check-out-today`, { withCredentials: true });
     return res.data ?? [];
   };
 
-  // 初回ロード
   const loadAll = useCallback(async () => {
     try {
       const [stay, ins, outs] = await Promise.all([
@@ -93,7 +100,7 @@ const DashboardLanding = () => {
     loadAll();
   }, [loadAll]);
 
-  // ===== レイト件数のKPI用集計 =====
+  // レイト件数（KPI）
   const lateCount = useMemo(() => {
     let count = 0;
     for (const gd of stayGuests) {
@@ -107,7 +114,7 @@ const DashboardLanding = () => {
 
   return (
     <div className="dashboard-landing">
-      {/* KPI カード */}
+      {/* KPI セクション */}
       <section className="kpi-section" aria-label="本日の概況">
         <div className="kpi-card">
           <div className="kpi-icon kpi-icon--blue"><FaUser /></div>
@@ -133,7 +140,7 @@ const DashboardLanding = () => {
           </div>
         </div>
 
-        {/* ★ レイトチェックアウト KPI */}
+        {/* レイトチェックアウト KPI */}
         <div className={`kpi-card ${lateCount > 0 ? 'kpi-card--alert' : ''}`}>
           <div className="kpi-icon kpi-icon--alert">!</div>
           <div className="kpi-meta">
@@ -180,9 +187,7 @@ const DashboardLanding = () => {
                     <div className="stay-dates">
                       <span>IN: {fmt(toDate(r?.checkInDate))}</span>
                       <span> / 予定OUT: {fmt(plannedOut)}</span>
-                      {late && (
-                        <span className="late-note">（要対応）</span>
-                      )}
+                      {late && <span className="late-note">（要対応）</span>}
                     </div>
                     <div className="stay-phone">{guest?.phone || '電話番号未登録'}</div>
                   </div>
@@ -198,6 +203,7 @@ const DashboardLanding = () => {
                     >
                       ゲスト編集
                     </button>
+
                     <button
                       type="button"
                       className="btn outline"
@@ -227,6 +233,7 @@ const DashboardLanding = () => {
           }}
         />
       )}
+
       {reservationModalOpen && selectedReservation && (
         <EditReservationModal
           reservation={selectedReservation}
@@ -234,6 +241,10 @@ const DashboardLanding = () => {
             setReservationModalOpen(false);
             setSelectedReservation(null);
             loadAll(); // 再取得
+          }}
+          onUpdate={() => {
+            // ここで親側の再取得等を任意で実行可能（成功後UI更新）
+            loadAll();
           }}
         />
       )}

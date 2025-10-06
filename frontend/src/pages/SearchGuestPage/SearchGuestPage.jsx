@@ -5,8 +5,8 @@ import {
   FaSearch, FaUser, FaBed, FaPhone, FaCalendarAlt, FaClipboardList, FaEdit, FaTrash,
 } from 'react-icons/fa';
 import './SearchGuestPage.css';
-import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
-import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
+import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal'
+import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal.tsx';
 import API_BASE from "../../utils/apiBase.js";
 
 axios.defaults.withCredentials = true;

@@ -1,7 +1,7 @@
 // src/pages/GuestListPage/GuestListPage.jsx
 import React, { useEffect, useMemo, useState } from 'react';
-import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal';
-import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal';
+import EditGuestModal from '../../components/Modal/EditGuestModal/EditGuestModal.jsx';
+import EditReservationModal from '../../components/Modal/EditReservationModal/EditReservationModal.tsx';
 import './GuestListPage.css';
 import API_BASE from "../../utils/apiBase.js";
 import { toKatakana, useKanaHandlers } from "../../utils/textUtils.js";
